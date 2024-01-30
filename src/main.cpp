@@ -1,16 +1,19 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
-
+#include <glm/vec2.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "Renderer/ShaderProgram.h"
 #include "Resources/ResourceManager.h"
 #include "Renderer/Texture2D.h"
+#include "Renderer/Sprite.h"
 
 GLfloat point[] =
 {
-     0.0f,  0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f
+     0.0f,  50.f, 0.0f,
+     50.f, -50.f, 0.0f,
+    -50.f, -50.f, 0.0f
 };
 
 GLfloat colors[] =
@@ -27,14 +30,13 @@ GLfloat texCoords[] =
     0.0f, 0.0f
 };
 
-int g_windowSizeX = 640;
-int g_windowSizeY = 480;
+glm::ivec2 g_windowSize(640, 480);
 
 void glfwWidowSizeCallback(GLFWwindow* pWindow, int width, int height)
 {
-    g_windowSizeX = width;
-    g_windowSizeY = height;
-    glViewport(0, 0, g_windowSizeX, g_windowSizeY);
+    g_windowSize.x = width;
+    g_windowSize.y = height;
+    glViewport(0, 0, width, height);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode)
@@ -59,7 +61,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* pWindow = glfwCreateWindow(g_windowSizeX, g_windowSizeY, "Battle City", nullptr, nullptr);
+    GLFWwindow* pWindow = glfwCreateWindow(g_windowSize.x, g_windowSize.y, "Battle City", nullptr, nullptr);
     if (!pWindow)
     {
         std::cerr << "glfwCreateWindow failed!" << std::endl;
@@ -93,7 +95,18 @@ int main(int argc, char** argv)
             return -1;
         }
 
-        auto tex = resourceManager.loadTexture("Default texture", "res/textures/map_8x8.png");
+        auto pSpriteShaderprogram = resourceManager.loadShaders("SpriteShader", "res/shaders/vSprite.txt", "res/shaders/fSprite.txt");
+        if (!pSpriteShaderprogram)
+        {
+            std::cerr << "Can't create shader program: " << "SpriteShader!" << std::endl;
+            return -1;
+        }
+
+        auto tex = resourceManager.loadTexture("DefaultTexture", "res/textures/map_8x8.png");
+
+        auto pSprite = resourceManager.loadSprite("NewSprite", "DefaultTexture", "SpriteShader", 50, 100);
+        pSprite->setPosition(glm::vec2(300, 100));
+
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -129,17 +142,37 @@ int main(int argc, char** argv)
         pDefaultShaderprogram->use();
         pDefaultShaderprogram->setInt("tex", 0);
 
+        glm::mat4 modelMatrix_1 = glm::mat4(1.f);
+        modelMatrix_1 = glm::translate(modelMatrix_1, glm::vec3(100.f, 50.f, 0.f));
+
+        glm::mat4 modelMatrix_2 = glm::mat4(1.f);
+        modelMatrix_2 = glm::translate(modelMatrix_2, glm::vec3(590.f, 50.f, 0.f));
+
+        glm::mat4 projectionMatrix = glm::ortho(0.f, static_cast<float>(g_windowSize.x), 0.f, static_cast<float>(g_windowSize.y), -100.f, 100.f);
+
+        pDefaultShaderprogram->setMatrix4("projectionMatrix", projectionMatrix);
+
+        pSpriteShaderprogram->use();
+        pSpriteShaderprogram->setInt("tex", 0);
+        pSpriteShaderprogram->setMatrix4("projectionMatrix", projectionMatrix);
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pWindow))
         {
             /* Render here */
             glClear(GL_COLOR_BUFFER_BIT);
 
-            tex->bind();
-
             pDefaultShaderprogram->use();
             glBindVertexArray(vao);
+            tex->bind();
+
+            pDefaultShaderprogram->setMatrix4("modelMatrix", modelMatrix_1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            pDefaultShaderprogram->setMatrix4("modelMatrix", modelMatrix_2);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            pSprite->render();
 
             /* Swap front and back buffers */
             glfwSwapBuffers(pWindow);

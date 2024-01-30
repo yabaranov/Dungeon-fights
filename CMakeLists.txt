@@ -4,17 +4,14 @@ set(PROJECT_NAME Battle-City)
 project(${PROJECT_NAME})
 
 
-add_executable(${PROJECT_NAME} 
-	src/main.cpp
-	src/Renderer/ShaderProgram.cpp
-	src/Renderer/ShaderProgram.h
-	src/Renderer/Texture2D.cpp
-	src/Renderer/Texture2D.h
-	src/Resources/ResourceManager.cpp
-	src/Resources/ResourceManager.h
-	src/Resources/stb_image.h
+file(GLOB SOURCES 
+"src/*.cpp" 
+"src/Renderer/*.h" 
+"src/Renderer/*.cpp"
+"src/Resources/*.h" 
+"src/Resources/*.cpp")
 
-)
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
@@ -34,6 +31,10 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 add_subdirectory(external/glad)
 target_link_libraries(${PROJECT_NAME} glad)
+
+add_subdirectory(external/glm)
+target_link_libraries(${PROJECT_NAME} glm)
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
