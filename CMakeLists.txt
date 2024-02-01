@@ -10,6 +10,7 @@ file(GLOB SOURCES
 "src/Renderer/*.cpp"
 "src/Resources/*.h" 
 "src/Resources/*.cpp")
+ 
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
