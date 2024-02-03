@@ -13,7 +13,6 @@ file(GLOB SOURCES
 "src/Game/*.h" 
 "src/Game/*.cpp")
 
- 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
@@ -22,7 +21,6 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME} PUBLIC /MP)
 	target_compile_options(${PROJECT_NAME} PUBLIC /Za)
 endif()
-
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
