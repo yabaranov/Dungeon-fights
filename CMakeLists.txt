@@ -9,9 +9,11 @@ file(GLOB SOURCES
 "src/Renderer/*.h" 
 "src/Renderer/*.cpp"
 "src/Resources/*.h" 
-"src/Resources/*.cpp")
- 
+"src/Resources/*.cpp"
+"src/Game/*.h" 
+"src/Game/*.cpp")
 
+ 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)

@@ -38,9 +38,6 @@ namespace Renderer
 		GLuint m_VAO;
 		GLuint m_vertexCoordsVBO;
 		GLuint m_textureCoordsVBO;
-		glm::vec2 m_currentLeftBottomUV;
-		glm::vec2 m_currentRightTopUV;
-
-
+		GLuint m_EBO;
 	};
 }

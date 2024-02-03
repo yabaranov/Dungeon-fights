@@ -12,10 +12,25 @@
 #define STBI_ONLY_PNG
 #include "stb_image.h"
 
-ResourceManager::ResourceManager(const std::string& executablePath)
+ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
+ResourceManager::TexturesMap ResourceManager::m_textures;
+ResourceManager::SpritesMap ResourceManager::m_sprites;
+ResourceManager::AnimatedSpritesMap ResourceManager::m_animatedSprites;
+std::string ResourceManager::m_path;
+
+
+void ResourceManager::setExecutablePath(const std::string& executablePath)
 {
 	size_t found = executablePath.find_last_of("/\\");
 	m_path = executablePath.substr(0, found);
+}
+
+void ResourceManager::unloadAllResourses()
+{
+	m_shaderPrograms.clear();
+	m_textures.clear();
+	m_sprites.clear();
+	m_animatedSprites.clear();
 }
 
 std::shared_ptr<Renderer::ShaderProgram> ResourceManager::loadShaders(const std::string& shaderProgramName, const std::string& vertexPath, const std::string& fragmentPath)
@@ -89,7 +104,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::stri
 	return it->second;
 }
 
-std::string ResourceManager::getFileString(const std::string& relativeFilePath) const
+std::string ResourceManager::getFileString(const std::string& relativeFilePath)
 {
 	std::ifstream f;
 	f.open(m_path + "/" + relativeFilePath.c_str(), std::ios::in | std::ios::binary);
@@ -214,4 +229,3 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTextureAtlas(std::stri
 	return pTexture;
 
 }
-
