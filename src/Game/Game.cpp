@@ -77,10 +77,10 @@ bool Game::init()
         return false;
     }
 
-    auto pSpriteShaderprogram = ResourceManager::loadShaders("SpriteShader", "res/shaders/vSprite.txt", "res/shaders/fSprite.txt");
+    auto pSpriteShaderprogram = ResourceManager::loadShaders("spriteShader", "res/shaders/vSprite.txt", "res/shaders/fSprite.txt");
     if (!pSpriteShaderprogram)
     {
-        std::cerr << "Can't create shader program: " << "SpriteShader!" << std::endl;
+        std::cerr << "Can't create shader program: " << "spriteShader!" << std::endl;
         return false;
     }
 
@@ -98,7 +98,7 @@ bool Game::init()
 
     auto pTextureAtlas = ResourceManager::loadTextureAtlas("DefaultTextureAtlas", "res/textures/map_8x8.png", std::move(subTexturesnames), 8, 8);
 
-    auto pAnimatedSprite = ResourceManager::loadAnimatedSprite("NewAnimatedSprite", "DefaultTextureAtlas", "SpriteShader", 100, 100, "topRightBlock");
+    auto pAnimatedSprite = ResourceManager::loadAnimatedSprite("NewAnimatedSprite", "DefaultTextureAtlas", "spriteShader", 100, 100, "topRightBlock");
     pAnimatedSprite->setPosition(glm::vec2(300, 300));
     std::vector<std::pair<std::string, uint64_t>> waterState;
     waterState.emplace_back(std::make_pair < std::string, uint64_t>("water1", 1000000000));
@@ -141,8 +141,8 @@ bool Game::init()
         "tankRight1", "tankRight2",
     };
 
-    auto pTanksTextureAtlas = ResourceManager::loadTextureAtlas("TanksTextureAtlas", "res/textures/tanks.png", std::move(tanksSubTexturesnames), 16, 16);
-    auto pTanksAnimatedSprite = ResourceManager::loadAnimatedSprite("TanksAnimatedSprite", "TanksTextureAtlas", "SpriteShader", 100, 100, "tankTop1");
+    auto pTanksTextureAtlas = ResourceManager::loadTextureAtlas("tanksTextureAtlas", "res/textures/tanks.png", std::move(tanksSubTexturesnames), 16, 16);
+    auto pTankAnimatedSprite = ResourceManager::loadAnimatedSprite("tankAnimatedSprite", "tanksTextureAtlas", "spriteShader", 100, 100, "tankTop1");
     
     std::vector<std::pair<std::string, uint64_t>> tankTopState;
     tankTopState.emplace_back(std::make_pair < std::string, uint64_t>("tankTop1", 500000000));
@@ -161,14 +161,14 @@ bool Game::init()
     tankRightState.emplace_back(std::make_pair < std::string, uint64_t>("tankRight2", 500000000));
 
 
-    pTanksAnimatedSprite->insertState("tankTopState", std::move(tankTopState));
-    pTanksAnimatedSprite->insertState("tankLeftState", std::move(tankLeftState));
-    pTanksAnimatedSprite->insertState("tankBottomState", std::move(tankBottomState));
-    pTanksAnimatedSprite->insertState("tankRightState", std::move(tankRightState));
+    pTankAnimatedSprite->insertState("tankTopState", std::move(tankTopState));
+    pTankAnimatedSprite->insertState("tankLeftState", std::move(tankLeftState));
+    pTankAnimatedSprite->insertState("tankBottomState", std::move(tankBottomState));
+    pTankAnimatedSprite->insertState("tankRightState", std::move(tankRightState));
 
-    pTanksAnimatedSprite->setState("tankTopState");
+    pTankAnimatedSprite->setState("tankTopState");
 
-    m_pTank = std::make_unique<Tank>(pTanksAnimatedSprite, 0.0000001f, glm::vec2(100.f, 100.f));
+    m_pTank = std::make_unique<Tank>(pTankAnimatedSprite, 0.0000001f, glm::vec2(100.f, 100.f));
 
 
 

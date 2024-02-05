@@ -7,6 +7,7 @@
 
 #include "Game/Game.h"
 #include "Resources/ResourceManager.h"
+#include "Renderer/Renderer.h"
 
 glm::ivec2 g_windowSize(640, 480);
 Game g_game(g_windowSize);
@@ -16,7 +17,7 @@ void glfwWidowSizeCallback(GLFWwindow* pWindow, int width, int height)
 {
     g_windowSize.x = width;
     g_windowSize.y = height;
-    glViewport(0, 0, width, height);
+    RenderEngine::Renderer::setViewport(width, height);
 }
 
 void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mode)
@@ -62,10 +63,10 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	
-    std::cout << "Renderer " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "Renderer " << RenderEngine::Renderer::getRendererStr()<< std::endl;
+    std::cout << "OpenGL version " << RenderEngine::Renderer::getVersionStr() << std::endl;
 
-    glClearColor(0, 0, 0, 1);
+    RenderEngine::Renderer::setClearColor(0, 0, 0, 1);
 
     {
         ResourceManager::setExecutablePath(argv[0]);
@@ -77,6 +78,8 @@ int main(int argc, char** argv)
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pWindow))
         {
+            /* Poll for and process events */
+            glfwPollEvents();
 
             auto currentTime = std::chrono::high_resolution_clock::now();
             uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime - lastTime).count();
@@ -84,15 +87,12 @@ int main(int argc, char** argv)
 
             g_game.update(duration);
             /* Render here */
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderEngine::Renderer::clear();
 
             g_game.render();
 
             /* Swap front and back buffers */
             glfwSwapBuffers(pWindow);
-
-            /* Poll for and process events */
-            glfwPollEvents();
         }
         ResourceManager::unloadAllResourses();
     }
