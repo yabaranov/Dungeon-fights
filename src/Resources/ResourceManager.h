@@ -47,6 +47,7 @@ public:
 	static std::shared_ptr<RenderEngine::Texture2D> loadTextureAtlas(std::string textureName, std::string texturePath,
 		std::vector<std::string> subTextures, const unsigned int subTextureWidth, const unsigned int subTextureHeight);
 
+	static bool loadJSONResources(const std::string& JSONPath);
 
 private:
 	static std::string getFileString(const std::string& relativePath);
