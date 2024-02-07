@@ -18,6 +18,19 @@ namespace RenderEngine
 	class Sprite
 	{
 	public:
+
+		struct FrameDescription
+		{
+			FrameDescription(const glm::vec2 _leftBottomUV, const glm::vec2 _rightTopUV, const uint64_t _duration) : 
+				leftBottomUV(_leftBottomUV), rightTopUV(_rightTopUV), duration(_duration)
+			{
+			}
+
+			glm::vec2 leftBottomUV;
+			glm::vec2 rightTopUV;
+			uint64_t duration;
+		};
+
 		Sprite(std::shared_ptr<Texture2D> pTexture,
 			std::string initialSubTexture,
 			std::shared_ptr<ShaderProgram> pShaderProgram);
@@ -26,9 +39,13 @@ namespace RenderEngine
 		Sprite(const Sprite&) = delete;
 		Sprite& operator=(const Sprite&) = delete;
 
-		virtual void render(const glm::vec2& position, const glm::vec2& size, const float rotation) const;
+		void render(const glm::vec2& position, const glm::vec2& size, const float rotation, const size_t frameId = 0) const;
 
-	protected:
+		void insertFrames(std::vector<FrameDescription> framesDescriptions);
+		uint64_t getFrameDuration(const size_t frameId) const;
+		size_t getFramesCount() const;
+
+	private:
 		std::shared_ptr<Texture2D> m_pTexture;
 		std::shared_ptr<ShaderProgram> m_pShaderProgram;
 
@@ -36,5 +53,9 @@ namespace RenderEngine
 		VertexBuffer m_vertexCoordsBuffer;
 		VertexBuffer  m_textureCoordsBuffer;
 		IndexBuffer m_indexBuffer;
+
+		std::vector<FrameDescription> m_framesDescriptions;
+
+		mutable size_t m_lastFrameId;
 	};
 }
