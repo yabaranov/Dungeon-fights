@@ -267,7 +267,7 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
 				framesDescriptions.reserve(framesArray.Size());
 				for (const auto& currentFrame : framesArray)
 				{
-					const std::string subTexture = currentFrame["subtexture"].GetString();
+					const std::string subTexture = currentFrame["subTexture"].GetString();
 					const uint64_t duration = currentFrame["duration"].GetUint64();
 					const auto pTextureAtlas = getTexture(textureAtlas);
 					const auto pSubTexture = pTextureAtlas->getSubTexture(subTexture);

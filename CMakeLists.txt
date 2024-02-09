@@ -4,19 +4,12 @@ set(PROJECT_NAME Battle-City)
 project(${PROJECT_NAME})
 
 
-file(GLOB SOURCES 
-"src/*.cpp" 
-"src/Renderer/*.h" 
-"src/Renderer/*.cpp"
-"src/Resources/*.h" 
-"src/Resources/*.cpp"
-"src/Game/*.h" 
-"src/Game/*.cpp"
-"src/Game/GameObjects/*.h" 
-"src/Game/GameObjects/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+source_group(TREE ${CMAKE_SOURCE_DIR}  FILES ${SOURCES} ${HEADERS})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
