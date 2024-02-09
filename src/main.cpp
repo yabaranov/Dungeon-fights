@@ -18,7 +18,7 @@ void glfwWidowSizeCallback(GLFWwindow* pWindow, int width, int height)
     g_windowSize.x = width;
     g_windowSize.y = height;
 
-    const float mapAspectRatio = 13.f / 14.f;
+    const float mapAspectRatio = static_cast<float>(g_game->getCurrentLevelWidth()) / g_game->getCurrentLevelHeight();    
     unsigned int viewPortWidth = g_windowSize.x;
     unsigned int viewPortHeight = g_windowSize.y;
     unsigned int viewPortLeftOffset = 0;
@@ -92,6 +92,7 @@ int main(int argc, char** argv)
     {
         ResourceManager::setExecutablePath(argv[0]);
         g_game->init();
+        glfwSetWindowSize(pWindow, static_cast<int>(g_game->getCurrentLevelWidth()), static_cast<int>(g_game->getCurrentLevelHeight()));
 
         auto lastTime = std::chrono::high_resolution_clock::now();
 
