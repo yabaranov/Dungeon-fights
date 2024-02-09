@@ -30,53 +30,53 @@ BrickWall::BrickWall(const EBrickWallType eBrickWallType, const glm::vec2& posit
 		m_eCurrentBrickState.fill(EBrickState::All);
 		break;
 	case EBrickWallType::Top:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopLeft)]  = EBrickState::All;
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopRight)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopLeft)]  = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopRight)] = EBrickState::All;
 		break;
 	case EBrickWallType::Bottom:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomLeft)]  = EBrickState::All;
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomRight)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomLeft)]  = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomRight)] = EBrickState::All;
 		break;
 	case EBrickWallType::Left:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomLeft)] = EBrickState::All;
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopLeft)]    = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomLeft)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopLeft)]    = EBrickState::All;
 		break;
 	case EBrickWallType::Right:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomRight)] = EBrickState::All;
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopRight)]    = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomRight)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopRight)]    = EBrickState::All;
 		break;
 	case EBrickWallType::TopLeft:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopLeft)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopLeft)] = EBrickState::All;
 		break;
 	case EBrickWallType::TopRight:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::TopRight)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::TopRight)] = EBrickState::All;
 		break;
 	case EBrickWallType::BottomLeft:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomLeft)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomLeft)] = EBrickState::All;
 		break;
 	case EBrickWallType::BottomRight:
-		m_eCurrentBrickState[static_cast<size_t>(EBrickLocation::BottomRight)] = EBrickState::All;
+		m_eCurrentBrickState[static_cast<size_t>(EBlockLocation::BottomRight)] = EBrickState::All;
 		break;
 
 	}
 }
 
-void BrickWall::renderBrick(const EBrickLocation eBrickLocation) const
+void BrickWall::renderBlock(const EBlockLocation eBlockLocation) const
 {
-	const EBrickState eBrickState = m_eCurrentBrickState[static_cast<size_t>(eBrickLocation)];
+	const EBrickState eBrickState = m_eCurrentBrickState[static_cast<size_t>(eBlockLocation)];
 
 	if (eBrickState != EBrickState::Destroyed)
 	{
-		m_sprites[static_cast<size_t>(eBrickState)]->render(m_position + m_blockOffsets[static_cast<size_t>(eBrickLocation)], m_size / 2.f, m_rotation);
+		m_sprites[static_cast<size_t>(eBrickState)]->render(m_position + m_blockOffsets[static_cast<size_t>(eBlockLocation)], m_size / 2.f, m_rotation);
 	}
 }
 
 void BrickWall::render() const 
 {
-	renderBrick(EBrickLocation::BottomLeft);
-	renderBrick(EBrickLocation::BottomRight);
-	renderBrick(EBrickLocation::TopLeft);
-	renderBrick(EBrickLocation::TopRight);
+	renderBlock(EBlockLocation::BottomLeft);
+	renderBlock(EBlockLocation::BottomRight);
+	renderBlock(EBlockLocation::TopLeft);
+	renderBlock(EBlockLocation::TopRight);
 }
 
 void BrickWall::update(const uint64_t delta) 

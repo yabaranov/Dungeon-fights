@@ -12,7 +12,7 @@ namespace RenderEngine
 class BrickWall : public IGameObject
 {
 public:
-	enum class EBrickWallType
+	enum class EBrickWallType : uint8_t
 	{
 		All, 
 		Top, 
@@ -26,7 +26,7 @@ public:
 
 	};
 
-	enum class EBrickState
+	enum class EBrickState : uint8_t
 	{
 		All,
 		TopLeft,
@@ -46,7 +46,7 @@ public:
 		Destroyed
 	};
 
-	enum class EBrickLocation
+	enum class EBlockLocation : uint8_t
 	{
 		TopLeft,
 		TopRight, 
@@ -60,8 +60,8 @@ public:
 	void update(const uint64_t delta) override;
 	
 private:
-	void renderBrick(const EBrickLocation eBrickLocation) const;
+	void renderBlock(const EBlockLocation eBlockLocation) const;
 	std::array<EBrickState, 4> m_eCurrentBrickState;
 	std::array<std::shared_ptr<RenderEngine::Sprite>, 15> m_sprites;
-	std::array < glm::vec2, 4> m_blockOffsets;
+	std::array<glm::vec2, 4> m_blockOffsets;
 };

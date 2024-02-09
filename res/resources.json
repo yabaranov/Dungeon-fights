@@ -217,15 +217,15 @@
             "frames" : [
                 {
                     "subTexture" : "water1",
-                    "duration"   : 500
+                    "duration"   : 500000000
                 },
                 {
                     "subTexture" : "water2",
-                    "duration"   : 500
+                    "duration"   : 500000000
                 },
                 {
                     "subTexture" : "water3",
-                    "duration"   : 500
+                    "duration"   : 500000000
                 }
             ]
         },
@@ -554,6 +554,24 @@
 				"D4D4D3D3D4D4D",
 				"D4D4DH1GD4D4D",
 				"DDDDD0E2DDDDD"
+			]
+		},
+		{
+			"description" : [
+				"MDDDDDNDDDDDO",
+				"D00D11D22D33D",
+				"D0DD1DD2DD3DD",
+				"DDDDDDDDDDDDD",
+				"D44D55D66D77D",
+				"D4DD5DD6DD7DD",
+				"DDDDDDDDDDDDD",
+				"D88D99DAADBBD",
+				"D8DD9DDADDBDD",
+				"DDDDDDDDDDDDD",
+				"DCCDGGDHHDIID",
+				"DCDDGDDHDDDDD",
+				"DDDDDH1GDDJJD",
+				"DDDDK0E2LDDDD"
 			]
 		}
 	]
