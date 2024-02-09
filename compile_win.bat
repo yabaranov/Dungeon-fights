@@ -1,4 +1,4 @@
 mkdir build
 cd build
 cmake ..
-cmake --build . --config Debug --target Battle-City
+cmake --build . --config Release --target Battle-City
