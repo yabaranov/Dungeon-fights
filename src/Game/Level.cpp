@@ -127,7 +127,7 @@ void Level::render() const
 			currentObject->render();
 }
 
-void Level::update(const uint64_t delta)
+void Level::update(const double delta)
 {
 	for (const auto& currentObject : m_levelObjects)
 		if (currentObject)
