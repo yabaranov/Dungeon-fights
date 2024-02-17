@@ -7,6 +7,7 @@ Eagle::Eagle(const glm::vec2& position, const glm::vec2& size, const float rotat
 	IGameObject(position, size, rotation, layer), 
 	m_sprites({ ResourceManager::getSprite("eagle"), ResourceManager::getSprite("eagle_dead") }), m_eCurrentState(EEagleState::Alive)
 {	
+	m_colliders.emplace_back(glm::vec2(0), m_size);
 }
 
 
