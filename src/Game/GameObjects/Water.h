@@ -27,7 +27,8 @@ public:
 	
 	void render() const override;
 	void update(const double delta) override;
-		
+	bool collides(const EObjectType objectType) override;
+
 private:
 	void renderBlock(const EBlockLocation eBlockLocation) const;
 	std::shared_ptr<RenderEngine::Sprite> m_sprite;
