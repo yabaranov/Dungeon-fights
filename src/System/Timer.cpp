@@ -12,7 +12,7 @@ void Timer::update(const double delta)
 		if (m_timeLeft <= 0)
 		{
 			m_isRunning = false;
-			m_callBack();
+			m_callback();
 		}
 	}
 }
@@ -22,7 +22,7 @@ void Timer::start(const double duration)
 	m_isRunning = true;
 }
 
-void Timer::setCallback(std::function<void()> callBack)
+void Timer::setCallback(std::function<void()> callback)
 {
-	m_callBack = callBack;
+	m_callback = callback;
 }

@@ -12,7 +12,7 @@ namespace RenderEngine
 		SpriteAnimator(std::shared_ptr<Sprite> pSprite);
 		size_t getCurrentFrame() const { return m_currentFrame; }
 		void update(const double delta);
-		double getTotalDuraion() const { return m_totalDuration; }
+		double getTotalDuration() const { return m_totalDuration; }
 		void reset();
 
 	private:
