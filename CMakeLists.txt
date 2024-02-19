@@ -8,7 +8,6 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 source_group(TREE ${CMAKE_SOURCE_DIR}  FILES ${SOURCES} ${HEADERS})
 
-
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -23,7 +22,6 @@ add_subdirectory(external/glm)
 target_link_libraries(${PROJECT_NAME} glm)
 
 include_directories(external/rapidjson/include)
-
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
