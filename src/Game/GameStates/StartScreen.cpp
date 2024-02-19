@@ -51,7 +51,7 @@ std::shared_ptr<RenderEngine::Sprite> getSpriteForDescription(const char descrip
 StartScreen::StartScreen(const std::vector<std::string>& startScreenDescription)
 {
 	if (startScreenDescription.empty())
-		std::cerr << "Empty start screen description!" << std::_Get_asan_aligned_first_end;
+		std::cerr << "Empty start screen description!" << std::endl;
 
 	auto leftOffsetPixels = 2 * BLOCK_SIZE;
 	unsigned int currentBottomOffset = STARTSCREEN_HEIGHT - 2 * BLOCK_SIZE;

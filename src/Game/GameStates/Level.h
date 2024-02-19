@@ -8,14 +8,15 @@
 #include "IGameState.h"
 
 class IGameObject;
+class Tank;
 
 class Level : public IGameState
 {
 public:
 	static constexpr unsigned int BLOCK_SIZE = 16;
 	Level(const std::vector<std::string>& levelDescription);
-	void render() const;
-	void update(const double delta);
+	void render() const override;
+	void update(const double delta) override;
 	unsigned int getStateWidth() const override;
 	unsigned int getStateHeight() const override;
 
@@ -27,6 +28,10 @@ public:
 	const glm::ivec2& getEnemyRespawn_3() const { return m_enemyRespawn_3; }
 
 	std::vector<std::shared_ptr<IGameObject>> getObjectsInArea(const glm::vec2& bottomLeft, const glm::vec2& topRight);
+
+	void processInput(const std::array<bool, 349>& keys) override;
+
+	void initPhysics();
 
 private:
 	size_t m_widthBlocks;
@@ -42,4 +47,5 @@ private:
 	glm::ivec2 m_enemyRespawn_3;
 
 	std::vector<std::shared_ptr<IGameObject>> m_levelObjects;
+	std::shared_ptr<Tank> m_pTank;
 };

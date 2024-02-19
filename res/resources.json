@@ -111,7 +111,20 @@
 				"yellowType1_Right1", 
 				"yellowType1_Right2"
 			]
+		},
+		
+		{
+			"name" 				: "menu_128x64",
+			"filePath"  		: "res/textures/menu_128x64.png",
+			"subTextureWidth"   : 128,
+			"subTextureHeight"  : 64,
+			"subTextures" : 
+			[
+				"menu"
+			]
 		}
+		
+
 	
 	],
 	
@@ -465,6 +478,12 @@
             "textureAtlas"      : "mapTextureAtlas_16x16",
             "shader"            : "spriteShader",
             "initialSubTexture" : "bonus_gun"
+        },
+		{
+            "name"              : "menu",
+            "textureAtlas"      : "menu_128x64",
+            "shader"            : "spriteShader",
+            "initialSubTexture" : "menu"
         },
 		{
             "name"              : "tankSprite_top",
