@@ -25,9 +25,9 @@ public:
 
 	Water(const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer);
 	
-	void render() const override;
-	void update(const double delta) override;
-	bool collides(const EObjectType objectType) override;
+	virtual void render() const override;
+	virtual void update(const double delta) override;
+	virtual bool collides(const EObjectType objectType) override;
 
 private:
 	void renderBlock(const EBlockLocation eBlockLocation) const;

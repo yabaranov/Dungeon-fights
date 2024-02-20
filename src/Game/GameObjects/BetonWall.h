@@ -42,8 +42,8 @@ public:
 
 	BetonWall(const EBetonWallType eBetonWallType, const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer);
 	
-	void render() const override;
-	void update(const double delta) override;
+	virtual void render() const override;
+	virtual void update(const double delta) override;
 	
 private:
 	void renderBlock(const EBlockLocation eBlockLocation) const;

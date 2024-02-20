@@ -3,9 +3,12 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <set>
+
 #include <glm/vec2.hpp>
 
 #include "IGameState.h"
+#include "../Game.h"
 
 class IGameObject;
 class Tank;
@@ -14,11 +17,11 @@ class Level : public IGameState
 {
 public:
 	static constexpr unsigned int BLOCK_SIZE = 16;
-	Level(const std::vector<std::string>& levelDescription);
-	void render() const override;
-	void update(const double delta) override;
-	unsigned int getStateWidth() const override;
-	unsigned int getStateHeight() const override;
+	Level(const std::vector<std::string>& levelDescription, const Game::EGameMode eGameMode);
+	virtual void render() const override;
+	virtual void update(const double delta) override;
+	virtual unsigned int getStateWidth() const override;
+	virtual unsigned int getStateHeight() const override;
 
 	const glm::ivec2& getPlayerRespawn_1() const { return m_playerRespawn_1; }
 	const glm::ivec2& getPlayerRespawn_2() const { return m_playerRespawn_2; }
@@ -29,9 +32,9 @@ public:
 
 	std::vector<std::shared_ptr<IGameObject>> getObjectsInArea(const glm::vec2& bottomLeft, const glm::vec2& topRight);
 
-	void processInput(const std::array<bool, 349>& keys) override;
+	virtual void processInput(const std::array<bool, 349>& keys) override;
 
-	void initPhysics();
+	void initLevel();
 
 private:
 	size_t m_widthBlocks;
@@ -47,5 +50,8 @@ private:
 	glm::ivec2 m_enemyRespawn_3;
 
 	std::vector<std::shared_ptr<IGameObject>> m_levelObjects;
-	std::shared_ptr<Tank> m_pTank;
+	std::shared_ptr<Tank> m_pTank1;
+	std::shared_ptr<Tank> m_pTank2;
+	std::set<std::shared_ptr<Tank>> m_enemyTanks;
+	Game::EGameMode m_eGameMode;
 };

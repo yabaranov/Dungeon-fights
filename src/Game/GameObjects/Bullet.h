@@ -26,7 +26,7 @@ public:
         const glm::vec2& explosionSize,
         const float layer);
     virtual void render() const override;
-    void update(const double delta) override;
+    virtual void update(const double delta) override;
     bool isActive() const { return m_isActive; }
     void fire(const glm::vec2& position, const glm::vec2& direction);
 

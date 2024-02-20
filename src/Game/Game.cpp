@@ -17,7 +17,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_eCurrentGameState(EGameState::StartScreen)
+Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_eCurrentGameState(EGameState::StartScreen), m_currentLevelIndex(0)
 {
 	m_keys.fill(false);
 }
@@ -72,12 +72,18 @@ size_t Game::getCurrentHeight() const
     return m_pCurrentGameState->getStateHeight();
 }
 
-void Game::startNewLevel(const size_t level)
+void Game::startNewLevel(const size_t level, const EGameMode eGameMode)
 {
-    auto pLevel = std::make_shared<Level>(ResourceManager::getLevels()[level]);
+    m_currentLevelIndex = level;
+    auto pLevel = std::make_shared<Level>(ResourceManager::getLevels()[m_currentLevelIndex], eGameMode);
     m_pCurrentGameState = pLevel;
     Physics::PhysicsEngine::setCurrentLevel(pLevel);
     updateViewport();
+}
+
+void Game::nextLevel(const EGameMode eGameMode)
+{
+    startNewLevel(++m_currentLevelIndex, eGameMode);
 }
 
 void Game::setWindowSize(const glm::uvec2& windowSize)

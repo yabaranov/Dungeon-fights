@@ -26,12 +26,12 @@ public:
 	static constexpr unsigned int TANK_SIZE = BLOCK_SIZE * 2;
 
 	StartScreen(const std::vector<std::string>& startScreenDescription, Game* pGame);
-	void render() const override;
-	void update(const double delta) override;
-	void processInput(const std::array<bool, 349>& keys) override;
+	virtual void render() const override;
+	virtual void update(const double delta) override;
+	virtual void processInput(const std::array<bool, 349>& keys) override;
 
-	unsigned int getStateWidth() const override;
-	unsigned int getStateHeight() const override;
+	virtual unsigned int getStateWidth() const override;
+	virtual unsigned int getStateHeight() const override;
 private:
 	Game* m_pGame;
 	int m_currentMenuSelection;

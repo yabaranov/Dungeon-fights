@@ -14,6 +14,7 @@ namespace RenderEngine
 }
 
 class Bullet;
+class AIComponent;
 
 class Tank : public IGameObject
 {
@@ -80,17 +81,20 @@ public:
 	};
 
 	Tank(const Tank::ETankType eType,
+        const bool hasAI,
+        const bool shiledOnSpawn,
+        const EOrientation eOrientation,
 		const double maxVelocity, 
 		const glm::vec2& position, 
 		const glm::vec2& size, 
 		const float layer);
 
-	void render() const override;
+    virtual void render() const override;
 	void setOrientation(const EOrientation eOrientation);
-	void update(const double delta) override;
+    virtual void update(const double delta) override;
 
 	double getMaxVelocity() const { return m_maxVelocity; }
-	void setVelocity(const double velocity) override;
+    virtual void setVelocity(const double velocity) override;
 	void fire();
 
 private:
@@ -117,6 +121,10 @@ private:
 	double m_maxVelocity;
 	bool m_isSpawning;
 	bool m_hasShield;
+    bool m_shiledOnSpawn;
+
+
+    std::unique_ptr<AIComponent> m_pAIComponent;
 
     static const std::string& getTankSpriteFromType(const ETankType eType);
 };

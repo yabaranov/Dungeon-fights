@@ -15,6 +15,11 @@ class Game
 {
 	
 public:
+	enum class EGameMode
+	{
+		OnePlayer,
+		TwoPlayers
+	};
 
 	Game(const glm::uvec2& windowSize);
 	~Game();
@@ -25,7 +30,8 @@ public:
 	size_t getCurrentWidth() const;
 	size_t getCurrentHeight() const;
 
-	void startNewLevel(const size_t level);
+	void startNewLevel(const size_t level, const EGameMode eGameMode);
+	void nextLevel(const EGameMode eGameMode);
 	void setWindowSize(const glm::uvec2& windowSize);
 	void updateViewport();
 
@@ -46,4 +52,5 @@ private:
 
 	std::shared_ptr<IGameState> m_pCurrentGameState;
 	std::shared_ptr<RenderEngine::ShaderProgram> m_pSpriteShaderProgram;
+	size_t m_currentLevelIndex;
 };

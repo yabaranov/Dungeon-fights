@@ -24,10 +24,14 @@ public:
 	};
 
 	IGameObject(const EObjectType objectType, const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer);
+	void setOwner(IGameObject* pOwner) { m_pOwner = pOwner; }
+	IGameObject* getOwner() const { return m_pOwner; }
+
 	virtual void render() const = 0;
 	virtual void update(const double delta) {};
 	virtual ~IGameObject();
 	virtual glm::vec2& getCurrentPosition()  { return m_position; }
+	virtual glm::vec2& getTargetPosition() { return m_targetPosition; }
 	virtual glm::vec2& getCurrentDirection() { return m_direction; }
 	virtual double getCurrentVelocity() const { return m_velocity; }
 	virtual void setVelocity(const double velocity);
@@ -39,7 +43,9 @@ public:
 	virtual void onCollision() {}
 
 protected:
+	IGameObject* m_pOwner;
 	glm::vec2 m_position;
+	glm::vec2 m_targetPosition;
 	glm::vec2 m_size;
 	float m_rotation;
 	float m_layer;
