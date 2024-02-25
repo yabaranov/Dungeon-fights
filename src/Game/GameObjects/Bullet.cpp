@@ -10,7 +10,6 @@ Bullet::Bullet(const double velocity,
     const float layer) : 
     IGameObject(IGameObject::EObjectType::Bullet, position, size, 0.f, layer), 
     m_explosionSize(explosionSize), 
-    m_explosionOffset((m_explosionSize - m_size) / 2.f), 
     m_pSprite(ResourceManager::getSprite("bullet")),
     m_pSprite_explosion(ResourceManager::getSprite("explosion")),
     m_spriteAnimator_explosion(m_pSprite_explosion),
@@ -22,8 +21,10 @@ Bullet::Bullet(const double velocity,
         {
             setVelocity(0);
             m_isExplosion = true;
-            m_explosionTimer.start(m_spriteAnimator_explosion.getTotalDuration());
+            if(!m_explosionTimer.isRunning())
+                m_explosionTimer.start(m_spriteAnimator_explosion.getTotalDuration());           
         };
+
     m_colliders.emplace_back(glm::vec2(0), m_size, onCollisionCallback);
 
     m_explosionTimer.setCallback([&]()
@@ -39,7 +40,7 @@ void Bullet::render() const
 {
     if (m_isExplosion)
     {
-        m_pSprite_explosion->render(m_position - m_explosionOffset, m_explosionSize, m_rotation, m_layer + 0.1f, m_spriteAnimator_explosion.getCurrentFrame());       
+        m_pSprite_explosion->render(m_position + m_direction * m_explosionSize, m_explosionSize, m_rotation, m_layer + 0.1f, m_spriteAnimator_explosion.getCurrentFrame());
     }
     else if (m_isActive)
     {

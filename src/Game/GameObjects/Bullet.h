@@ -27,7 +27,6 @@ public:
 
 private:
     glm::vec2 m_explosionSize;
-    glm::vec2 m_explosionOffset;
     std::shared_ptr<RenderEngine::Sprite> m_pSprite;
     std::shared_ptr<RenderEngine::Sprite> m_pSprite_explosion;
     RenderEngine::SpriteAnimator m_spriteAnimator_explosion;

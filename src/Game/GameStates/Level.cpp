@@ -235,12 +235,12 @@ void Level::processInput(const std::array<bool, 349>& keys)
 
 void Level::initLevel()
 {
-	m_pPlayer = std::make_shared<Player>(Player::EOrientation::Top, 0.05, getPlayerRespawn(), glm::vec2(12), 0.f);
+	m_pPlayer = std::make_shared<Player>(Player::EOrientation::Top, 0.05, getPlayerRespawn(), glm::vec2(BLOCK_SIZE), 0.f);
 	Physics::PhysicsEngine::addDynamicGameObject(m_pPlayer);
 
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_1(), glm::vec2(12), 0.f));
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_2(), glm::vec2(12), 0.f));
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_3(), glm::vec2(12), 0.f));
+	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_1(), glm::vec2(BLOCK_SIZE), 0.f));
+	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_2(), glm::vec2(BLOCK_SIZE), 0.f));
+	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_3(), glm::vec2(BLOCK_SIZE), 0.f));
 
 	for (const auto& currentEnemyTank: m_enemies)
 		Physics::PhysicsEngine::addDynamicGameObject(currentEnemyTank);

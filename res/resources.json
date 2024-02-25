@@ -38,7 +38,8 @@
 				"betonWall",
 				"trees",
 				"border",
-				"bullet"
+				"bullet", 
+				"blood"
 			]
 		},
 		
@@ -240,6 +241,12 @@
             "shader"            : "spriteShader",
             "initialSubTexture" : "bullet"
         },
+		{
+            "name"              : "blood",
+            "textureAtlas"      : "mapTextureAtlas_8x8",
+            "shader"            : "spriteShader",
+            "initialSubTexture" : "blood"
+        },		
         {
 			"name" 				: "respawn",
 			"textureAtlas" 		: "mapTextureAtlas_16x16",
@@ -280,16 +287,16 @@
 			"frames" : [
                 {
                     "subTexture" : "explosion1",
-                    "duration"   : 100
+                    "duration"   : 75
                 },
                 {
                     "subTexture" : "explosion2",
-                    "duration"   : 100
+                    "duration"   : 75
                 }
                 ,
                 {
                     "subTexture" : "explosion3",
-                    "duration"   : 100
+                    "duration"   : 75
                 }
             ]
 		},		
