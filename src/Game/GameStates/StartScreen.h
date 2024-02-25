@@ -23,9 +23,10 @@ public:
 	static constexpr unsigned int STARTSCREEN_HEIGHT = 14 * BLOCK_SIZE * 2;
 	static constexpr unsigned int MENU_WIDTH = 128;
 	static constexpr unsigned int MENU_HEIGHT = 64;
-	static constexpr unsigned int TANK_SIZE = BLOCK_SIZE * 2;
+	static constexpr unsigned int TITLE_WIDTH = 140;
+	static constexpr unsigned int TITLE_HEIGHT = 70;
 
-	StartScreen(const std::vector<std::string>& startScreenDescription, Game* pGame);
+	StartScreen(Game* pGame);
 	virtual void render() const override;
 	virtual void update(const double delta) override;
 	virtual void processInput(const std::array<bool, 349>& keys) override;
@@ -36,8 +37,8 @@ private:
 	Game* m_pGame;
 	int m_currentMenuSelection;
 	bool m_keyReleased;
-	std::vector<std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2>> m_sprites;
+
+	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_titleSprite;
 	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_menuSprite;
-	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_tankSprite;
-	RenderEngine::SpriteAnimator m_tankSpriteAnimator;
+	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_playerSprite;
 };

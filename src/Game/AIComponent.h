@@ -1,13 +1,13 @@
 #pragma once
 
-class Tank;
+class Enemy;
 
 class AIComponent
 {
 public:
-	AIComponent(Tank* pParentTank);
+	AIComponent(Enemy* pParentTank);
 	void update(const double delta);
 
 private:
-	Tank* m_pParentTank;
+	Enemy* m_pParentTank;
 };

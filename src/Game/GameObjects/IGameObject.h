@@ -8,15 +8,13 @@ class IGameObject
 {
 public:
 
-	enum class EObjectType
+	enum class EObjectType : uint8_t
 	{
 		BetonWall,
 		Border,
 		BrickWall,
 		Bullet,
-		Eagle,
-		Ice,
-		Tank,
+		Unit,
 		Trees,
 		Water,
 

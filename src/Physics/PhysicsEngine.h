@@ -37,7 +37,6 @@ namespace Physics
 			boundingBox(_boundingBox), isActive(true), onCollisionCallback(_onCollisionCallback)
 		{}
 
-
 		AABB boundingBox;
 		bool isActive;
 		std::function<void(const IGameObject&, const ECollisionDirection)> onCollisionCallback;

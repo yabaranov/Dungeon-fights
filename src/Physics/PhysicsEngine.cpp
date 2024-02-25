@@ -29,21 +29,23 @@ namespace Physics {
     void PhysicsEngine::update(const double delta)
     {
         calculateTargetPositions(m_dynamicObjects, delta);
-
+        
         for (auto it1 = m_dynamicObjects.begin(); it1 != m_dynamicObjects.end();)
         {
             auto pObject1 = *it1;
             for (auto it2 = ++it1; it2 != m_dynamicObjects.end(); it2++)
             {
                 auto pObject2 = *it2;
-                if(pObject1->getOwner()== pObject2.get() || pObject2->getOwner() == pObject1.get())
+                if(pObject1->getOwner() == pObject2.get() || pObject2->getOwner() == pObject1.get())
                     continue;
+
                 if (!hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
                     continue;
+          
                 if (hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getCurrentPosition()))
                     pObject1->getTargetPosition() = pObject1->getCurrentPosition();
-
-                if (hasPositionIntersection(pObject1, pObject1->getCurrentPosition(), pObject2, pObject2->getTargetPosition()))
+                
+                if (hasPositionIntersection(pObject2, pObject2->getTargetPosition(), pObject1, pObject1->getCurrentPosition()))
                     pObject2->getTargetPosition() = pObject2->getCurrentPosition();
             }
         }
@@ -89,7 +91,6 @@ namespace Physics {
 
     bool PhysicsEngine::hasPositionIntersection(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1, const std::shared_ptr<IGameObject>& pObject2, const glm::vec2& position2)
     {
-
         for (const auto& currentObjectCollider : pObject1->getColliders())      
             for (const auto& otherObjectCollider : pObject2->getColliders())            
                 if (hasCollidersIntersection(currentObjectCollider, position1, otherObjectCollider, position2))
@@ -138,7 +139,7 @@ namespace Physics {
                         const auto& collidersToCheck = currentObjectToCheck->getColliders();
                         if (currentObjectToCheck->collides(currentDynamicObject->getObjectType()) && !collidersToCheck.empty())
                         {
-                            for (const auto& currentObjectCollider : currentObjectToCheck->getColliders())
+                            for (const auto& currentObjectCollider : collidersToCheck)
                             {
                                 if (currentObjectCollider.isActive && hasCollidersIntersection(currentDynamicObjectCollider, newPosition, currentObjectCollider, currentObjectToCheck->getCurrentPosition()))
                                 {

@@ -1,7 +1,7 @@
 #include "AIComponent.h"
-#include "GameObjects/Tank.h"
+#include "GameObjects/Units/Enemy.h"
 
-AIComponent::AIComponent(Tank* pParentTank) : m_pParentTank(pParentTank)
+AIComponent::AIComponent(Enemy* pParentTank) : m_pParentTank(pParentTank)
 {
 }
 

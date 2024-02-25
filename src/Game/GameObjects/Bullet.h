@@ -13,12 +13,6 @@ namespace RenderEngine {
 
 class Bullet : public IGameObject {
 public:
-    enum class EOrientation : uint8_t {
-        Top,
-        Bottom,
-        Left,
-        Right
-    };
 
     Bullet(const double velocity,
         const glm::vec2& position,
@@ -33,14 +27,10 @@ public:
 private:
     glm::vec2 m_explosionSize;
     glm::vec2 m_explosionOffset;
-    std::shared_ptr<RenderEngine::Sprite> m_pSprite_top;
-    std::shared_ptr<RenderEngine::Sprite> m_pSprite_bottom;
-    std::shared_ptr<RenderEngine::Sprite> m_pSprite_left;
-    std::shared_ptr<RenderEngine::Sprite> m_pSprite_right;
+    std::shared_ptr<RenderEngine::Sprite> m_pSprite;
     std::shared_ptr<RenderEngine::Sprite> m_pSprite_explosion;
     RenderEngine::SpriteAnimator m_spriteAnimator_explosion;
     Timer m_explosionTimer;
-    EOrientation m_eOrientation;
     double m_maxVelocity;
     bool m_isActive;
     bool m_isExplosion;

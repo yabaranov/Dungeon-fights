@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-set(PROJECT_NAME Battle-City)
+set(PROJECT_NAME Dungeon-fights)
 project(${PROJECT_NAME})
 
 file(GLOB_RECURSE HEADERS "src/*.h")
@@ -31,6 +31,7 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME} PUBLIC /MP)
 	target_compile_options(${PROJECT_NAME} PUBLIC /Za)
 endif()
+
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
