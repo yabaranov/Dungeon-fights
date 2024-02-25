@@ -63,3 +63,8 @@ void Bullet::fire(const glm::vec2& position, const glm::vec2& direction)
     m_isActive = true;
     setVelocity(m_maxVelocity);
 }
+
+bool Bullet::collides(const EObjectType objectType)
+{
+    return objectType != IGameObject::EObjectType::Bullet;
+}

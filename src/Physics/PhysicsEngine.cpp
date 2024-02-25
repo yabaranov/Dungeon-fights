@@ -28,7 +28,7 @@ namespace Physics {
 
     void PhysicsEngine::update(const double delta)
     {
-        calculateTargetPositions(m_dynamicObjects, delta);
+        calculateTargetPositions(delta);
         
         for (auto it1 = m_dynamicObjects.begin(); it1 != m_dynamicObjects.end();)
         {
@@ -41,7 +41,7 @@ namespace Physics {
 
                 if (!hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
                     continue;
-          
+         
                 if (hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getCurrentPosition()))
                     pObject1->getTargetPosition() = pObject1->getCurrentPosition();
                 
@@ -50,7 +50,7 @@ namespace Physics {
             }
         }
 
-        updatePositions(m_dynamicObjects);        
+        updatePositions();        
     }
 
     void PhysicsEngine::addDynamicGameObject(std::shared_ptr<IGameObject> pGameObject)
@@ -91,98 +91,70 @@ namespace Physics {
 
     bool PhysicsEngine::hasPositionIntersection(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1, const std::shared_ptr<IGameObject>& pObject2, const glm::vec2& position2)
     {
-        for (const auto& currentObjectCollider : pObject1->getColliders())      
-            for (const auto& otherObjectCollider : pObject2->getColliders())            
-                if (hasCollidersIntersection(currentObjectCollider, position1, otherObjectCollider, position2))
-                    return true;
-                   
-        return false;
+        ECollisionDirection collisionDirectionObject_1 = ECollisionDirection::Right;
+        if (pObject1->getCurrentDirection().x < 0) collisionDirectionObject_1 = ECollisionDirection::Left;
+        else if (pObject1->getCurrentDirection().y > 0) collisionDirectionObject_1 = ECollisionDirection::Top;
+        else if (pObject1->getCurrentDirection().y < 0) collisionDirectionObject_1 = ECollisionDirection::Bottom;
+
+        ECollisionDirection collisionDirectionObject_2 = ECollisionDirection::Left;
+        if (pObject1->getCurrentDirection().x < 0) collisionDirectionObject_2 = ECollisionDirection::Right;
+        else if (pObject1->getCurrentDirection().y > 0) collisionDirectionObject_2 = ECollisionDirection::Bottom;
+        else if (pObject1->getCurrentDirection().y < 0) collisionDirectionObject_2 = ECollisionDirection::Top;
+
+        bool hasCollision = false;
+        if (pObject2->collides(pObject1->getObjectType()) && pObject1->collides(pObject2->getObjectType()))
+            for (const auto& currentObjectCollider : pObject1->getColliders())      
+                for (const auto& otherObjectCollider : pObject2->getColliders())            
+                    if (otherObjectCollider.isActive && currentObjectCollider.isActive && hasCollidersIntersection(currentObjectCollider, position1, otherObjectCollider, position2))
+                    {
+                        hasCollision = true;
+                        if (currentObjectCollider.onCollisionCallback)                        
+                            currentObjectCollider.onCollisionCallback(*pObject2, collisionDirectionObject_1);                      
+                        if (otherObjectCollider.onCollisionCallback)                        
+                            otherObjectCollider.onCollisionCallback(*pObject1, collisionDirectionObject_2);                        
+                    }
+                                      
+        return hasCollision;
     }
     
-    void PhysicsEngine::calculateTargetPositions(std::unordered_set<std::shared_ptr<IGameObject>>& dynamicObjects, const double delta)
+    void PhysicsEngine::calculateTargetPositions(const double delta)
     {
-        for (auto& currentDynamicObject : dynamicObjects)
+        for (auto& currentDynamicObject : m_dynamicObjects)
         {
             if (currentDynamicObject->getCurrentVelocity() > 0)
             {
-                // align position to multiple of 4 pixels
-                if (currentDynamicObject->getCurrentDirection().x != 0.f) // right and left
-                {
-                    currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getCurrentPosition().x, static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().y / 4.f + 0.5f) * 4.f);
-                }
-                else if (currentDynamicObject->getCurrentDirection().y != 0.f) // top and bottom
-                {
+                if (currentDynamicObject->getCurrentDirection().x != 0.f)               
+                    currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getCurrentPosition().x, static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().y / 4.f + 0.5f) * 4.f);               
+                else if (currentDynamicObject->getCurrentDirection().y != 0.f)              
                     currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getCurrentPosition().y);
-                }
-
+                
                 const auto newPosition = currentDynamicObject->getTargetPosition() + currentDynamicObject->getCurrentDirection() * static_cast<float>(currentDynamicObject->getCurrentVelocity() * delta);
                 std::vector<std::shared_ptr<IGameObject>> objectsToCheck = m_pCurrentLevel->getObjectsInArea(newPosition, newPosition + currentDynamicObject->getSize());
-
-
-                const auto& colliders = currentDynamicObject->getColliders();
+                
                 bool hasCollision = false;
 
-                ECollisionDirection dynamicObjectCollisionDirection = ECollisionDirection::Right;
-                if (currentDynamicObject->getCurrentDirection().x < 0) dynamicObjectCollisionDirection = ECollisionDirection::Left;
-                else if (currentDynamicObject->getCurrentDirection().y > 0) dynamicObjectCollisionDirection = ECollisionDirection::Top;
-                else if (currentDynamicObject->getCurrentDirection().y < 0) dynamicObjectCollisionDirection = ECollisionDirection::Bottom;
-
-                ECollisionDirection objectCollisionDirection = ECollisionDirection::Left;
-                if (currentDynamicObject->getCurrentDirection().x < 0) objectCollisionDirection = ECollisionDirection::Right;
-                else if (currentDynamicObject->getCurrentDirection().y > 0) objectCollisionDirection = ECollisionDirection::Bottom;
-                else if (currentDynamicObject->getCurrentDirection().y < 0) objectCollisionDirection = ECollisionDirection::Top;
-
-                for (const auto& currentDynamicObjectCollider : colliders)
-                {
-                    for (const auto& currentObjectToCheck : objectsToCheck)
-                    {
-                        const auto& collidersToCheck = currentObjectToCheck->getColliders();
-                        if (currentObjectToCheck->collides(currentDynamicObject->getObjectType()) && !collidersToCheck.empty())
-                        {
-                            for (const auto& currentObjectCollider : collidersToCheck)
-                            {
-                                if (currentObjectCollider.isActive && hasCollidersIntersection(currentDynamicObjectCollider, newPosition, currentObjectCollider, currentObjectToCheck->getCurrentPosition()))
-                                {
-                                    hasCollision = true;
-                                    if (currentObjectCollider.onCollisionCallback)
-                                    {
-                                        currentObjectCollider.onCollisionCallback(*currentDynamicObject, objectCollisionDirection);
-                                    }
-                                    if (currentDynamicObjectCollider.onCollisionCallback)
-                                    {
-                                        currentDynamicObjectCollider.onCollisionCallback(*currentObjectToCheck, dynamicObjectCollisionDirection);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                if (!hasCollision)
-                {
-                    currentDynamicObject->getTargetPosition() = newPosition;
-                }
+                for (const auto& currentObjectToCheck : objectsToCheck)                                 
+                    if (hasPositionIntersection(currentDynamicObject, newPosition, currentObjectToCheck, currentObjectToCheck->getCurrentPosition()))
+                        hasCollision = true;                    
+                
+                if (!hasCollision)               
+                    currentDynamicObject->getTargetPosition() = newPosition;               
                 else
                 {
-                    // align position to multiple of 8 pixels
-                    if (currentDynamicObject->getCurrentDirection().x != 0.f) // right and left
-                    {
-                        currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getTargetPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getTargetPosition().y);
-                    }
-                    else if (currentDynamicObject->getCurrentDirection().y != 0.f) // top and bottom
-                    {
+                    if (currentDynamicObject->getCurrentDirection().x != 0.f)               
+                        currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getTargetPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getTargetPosition().y);                
+                    else if (currentDynamicObject->getCurrentDirection().y != 0.f)                   
                         currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getTargetPosition().x, static_cast<unsigned int>(currentDynamicObject->getTargetPosition().y / 4.f + 0.5f) * 4.f);
-                    }
+                    
                 }
             }
         }
 
     }
 
-    void PhysicsEngine::updatePositions(std::unordered_set<std::shared_ptr<IGameObject>>& dynamicObjects)
+    void PhysicsEngine::updatePositions()
     {
-        for (auto& currentDynamicObject : dynamicObjects)
+        for (auto& currentDynamicObject : m_dynamicObjects)
             currentDynamicObject->getCurrentPosition() = currentDynamicObject->getTargetPosition();
     }
 }

@@ -8,7 +8,7 @@
 IUnit::IUnit(std::shared_ptr<RenderEngine::Sprite> sprite, const EOrientation eOrientation, const double maxVelocity,
 	const glm::vec2& position, const glm::vec2& size, const float layer) :
 	IGameObject(IGameObject::EObjectType::Unit, position, size, 0.f, layer), 
-	m_pCurrentBullet(std::make_shared<Bullet>(0.1, m_position + m_size / 4.f, m_size / 2.f, m_size, layer)),
+	m_pCurrentBullet(std::make_shared<Bullet>(0.1, m_position + m_size / 4.f, m_size / 2.f, m_size, layer + 0.01f)),
 	m_pSprite(std::move(sprite)),
 	m_pSprite_respawn(ResourceManager::getSprite("respawn")),
 	m_spriteAnimator_respawn(m_pSprite_respawn),
@@ -72,6 +72,7 @@ void IUnit::fire()
 {
 	if (!m_isSpawning && !m_pCurrentBullet->isActive())
 	{
+
 		m_pCurrentBullet->fire(m_position + m_size / 4.f + m_size * m_direction / 4.f, m_direction);
 	}
 }
