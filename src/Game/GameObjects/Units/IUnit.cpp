@@ -11,15 +11,20 @@ IUnit::IUnit(const std::string& sprite, const EOrientation eOrientation, const d
 	m_pCurrentBullet(std::make_shared<Bullet>(0.1, m_position + m_size / 4.f, m_size / 2.f, m_size / 2.f, layer + 0.01f)),
 	m_pSprite(ResourceManager::getSprite(sprite)),
 	m_pSpriteShot(ResourceManager::getSprite(sprite + "_shot")),
-	m_pSprite_respawn(ResourceManager::getSprite("respawn")),
+	m_pRespawnSprite(ResourceManager::getSprite("respawn")),
 	m_pSpriteBlood(ResourceManager::getSprite("blood")),
+	m_pDeathSprite(ResourceManager::getSprite(sprite + "_death")), 
 	m_bloodPosition(position),
-	m_spriteAnimator_respawn(m_pSprite_respawn),
+	m_respawnSpriteAnimator(m_pRespawnSprite),
 	m_maxVelocity(maxVelocity),
 	m_isSpawning(true),
 	m_isBlood(false),
-	colliderOffset(4.f)
+	colliderOffset(4.f), 
+	m_eUnitState(EUnitState::Alive), 
+	m_health(10)	
 {
+	m_damage = 5;
+
 	m_respawnTimer.setCallback([&]()
 		{
 			m_isSpawning = false;
@@ -34,8 +39,9 @@ IUnit::IUnit(const std::string& sprite, const EOrientation eOrientation, const d
 				m_bloodPosition = m_position;
 				m_isBlood = true;
 				m_bloodTimer.start(10000);
-				
-
+				m_health -= object.getOwner()->getDamage();
+				if (m_health < 0)
+					m_eUnitState = EUnitState::Dead;
 			}
 			
 		};
@@ -45,7 +51,6 @@ IUnit::IUnit(const std::string& sprite, const EOrientation eOrientation, const d
 			m_isBlood = false;
 		}
 	);
-
 
 	setOrientation(eOrientation);
 
@@ -59,12 +64,17 @@ void IUnit::render() const
 {
 	if (m_isSpawning)
 	{
-		m_pSprite_respawn->render(m_position, m_size, m_rotation, m_layer, m_spriteAnimator_respawn.getCurrentFrame());
+		m_pRespawnSprite->render(m_position, m_size, m_rotation, m_layer, m_respawnSpriteAnimator.getCurrentFrame());
 	}
-	else
+	else if(m_eUnitState == EUnitState::Alive)
 	{
 		m_pSprite->render(m_position, m_size, m_rotation, m_layer);
 	}
+	else
+	{
+		m_pDeathSprite->render(m_position, m_size, m_rotation, m_layer);
+	}
+
 
 	if (m_isBlood)
 		m_pSpriteBlood->render(m_bloodPosition, m_size, 0.f, m_layer - 0.01f);
@@ -118,15 +128,14 @@ void IUnit::update(const double delta)
 		
 	if (m_isSpawning)
 	{
-		m_spriteAnimator_respawn.update(delta);
+		m_respawnSpriteAnimator.update(delta);
 		m_respawnTimer.update(delta);
 	}
-	else
+	else if(m_eUnitState == EUnitState::Alive)
 	{
 		switch (m_eOrientation)
 		{
 		case EOrientation::Top:
-
 			m_rotation = 90.0f;
 			break;
 		case EOrientation::Bottom:

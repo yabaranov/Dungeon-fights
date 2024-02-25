@@ -19,6 +19,11 @@ class IUnit : public IGameObject
 {
 public:
 
+	enum class EUnitState : uint8_t
+	{
+		Alive, Dead
+	};
+
 	enum class EOrientation : uint8_t
 	{
 		Top, Bottom, Left, Right
@@ -34,15 +39,20 @@ public:
 	void setOrientation(const EOrientation eOrientation);
 	double getMaxVelocity() const { return m_maxVelocity; }
 	void fire();
+	EUnitState getUnitState() { return m_eUnitState; }
 
 protected:
+	EUnitState m_eUnitState;
+	int m_health;
 	EOrientation m_eOrientation;
 	std::shared_ptr<Bullet> m_pCurrentBullet;
 	std::shared_ptr<RenderEngine::Sprite> m_pSprite;
 	std::shared_ptr<RenderEngine::Sprite> m_pSpriteShot;
 	
-	std::shared_ptr<RenderEngine::Sprite> m_pSprite_respawn;
-	RenderEngine::SpriteAnimator m_spriteAnimator_respawn;
+	std::shared_ptr<RenderEngine::Sprite> m_pRespawnSprite;
+	RenderEngine::SpriteAnimator m_respawnSpriteAnimator;
+
+	std::shared_ptr<RenderEngine::Sprite> m_pDeathSprite;
 
 	Timer m_respawnTimer;
 	Timer m_shotTimer;

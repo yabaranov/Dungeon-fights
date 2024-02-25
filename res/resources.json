@@ -38,8 +38,7 @@
 				"betonWall",
 				"trees",
 				"border",
-				"bullet", 
-				"blood"
+				"bullet" 				
 			]
 		},
 		
@@ -55,7 +54,8 @@
 				"respawn4",
 				"explosion1",
 				"explosion2",
-				"explosion3"
+				"explosion3", 
+				"blood"
 			]
 		},
 		
@@ -67,12 +67,10 @@
 			"subTextures" : [
 				"player",
 				"player_shot",
-				"player_death1",
-				"player_death2",
+				"player_death",
 				"enemy",
 				"enemy_shot",
-				"enemy_death1",
-				"enemy_death2"
+				"enemy_death"
 			]
 		},
 		
@@ -243,7 +241,7 @@
         },
 		{
             "name"              : "blood",
-            "textureAtlas"      : "mapTextureAtlas_8x8",
+            "textureAtlas"      : "mapTextureAtlas_16x16",
             "shader"            : "spriteShader",
             "initialSubTexture" : "blood"
         },		
@@ -328,17 +326,7 @@
 			"name" 				: "player_death",
 			"textureAtlas" 		: "banditsTextureAtlas",
 			"shader" 			: "spriteShader",
-			"initialSubTexture" : "player_death1",
-			"frames" : [
-                {
-                    "subTexture" : "player_death1",
-                    "duration"   : 500
-                },
-                {
-                    "subTexture" : "player_death2",
-                    "duration"   : 500
-                }
-            ]
+			"initialSubTexture" : "player_death"			
 		},
 		{
             "name"              : "enemy",
@@ -356,17 +344,7 @@
 			"name" 				: "enemy_death",
 			"textureAtlas" 		: "banditsTextureAtlas",
 			"shader" 			: "spriteShader",
-			"initialSubTexture" : "enemy_death1",
-			"frames" : [
-                {
-                    "subTexture" : "enemy_death1",
-                    "duration"   : 500
-                },
-                {
-                    "subTexture" : "enemy_death2",
-                    "duration"   : 500
-                }
-            ]
+			"initialSubTexture" : "enemy_death"			
 		}
 	],
 	"levels" : [

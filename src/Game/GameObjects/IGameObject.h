@@ -39,6 +39,7 @@ public:
 	EObjectType getObjectType() const { return m_objectType; }
 	virtual bool collides(const EObjectType objectType) { return true; }
 	virtual void onCollision() {}
+	unsigned int getDamage() { return m_damage; }
 
 protected:
 	IGameObject* m_pOwner;
@@ -49,6 +50,7 @@ protected:
 	float m_layer;
 	EObjectType m_objectType;
 
+	unsigned int m_damage;
 	glm::vec2 m_direction;
 	double m_velocity;
 	std::vector<Physics::Collider> m_colliders;
