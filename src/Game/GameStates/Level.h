@@ -35,8 +35,8 @@ private:
 	Game* m_pGame;
 
 	static constexpr unsigned int NUMBER_ENEMIES = 3;
-	static constexpr unsigned int NUMBER_ENEMY_LIVES = 1;
-	static constexpr unsigned int NUMBER_PLAYER_LIVES = 1;
+	static constexpr unsigned int NUMBER_ENEMY_LIVES = 5;
+	static constexpr unsigned int NUMBER_PLAYER_LIVES = 5;
 	size_t m_widthBlocks;
 	size_t m_heightBlocks;
 
