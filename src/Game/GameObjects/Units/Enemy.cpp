@@ -9,7 +9,7 @@ Enemy::Enemy(
 	const glm::vec2& position,
 	const glm::vec2& size, 
 	const float layer) :
-	IUnit("enemy", eOrientation, maxVelocity, position, size, layer)
+	IUnit(EUnitType::Enemy, "enemy", eOrientation, maxVelocity, position, size, layer)
 {
 	m_pAIComponent = std::make_unique<AIComponent>(this);	
 }

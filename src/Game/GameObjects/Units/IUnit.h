@@ -29,7 +29,25 @@ public:
 		Top, Bottom, Left, Right
 	};
 
-	IUnit(const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
+	enum class EUnitType : uint8_t
+	{
+		Player,
+		Enemy
+	};
+
+	enum class EUnitHealth : uint8_t
+	{
+		Player = 20,
+		Enemy = 10
+	};
+
+	enum class EUnitDamage : uint8_t
+	{
+		Player = 5,
+		Enemy = 5
+	};
+
+	IUnit(const EUnitType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
 		const glm::vec2& position, const glm::vec2& size, const float layer);
 
 	virtual void render() const override;
@@ -53,16 +71,22 @@ protected:
 	RenderEngine::SpriteAnimator m_respawnSpriteAnimator;
 
 	std::shared_ptr<RenderEngine::Sprite> m_pDeathSprite;
+	glm::vec2 m_deathPosition;
 
 	Timer m_respawnTimer;
 	Timer m_shotTimer;
+	Timer m_deathTimer;
 	
 	double m_maxVelocity;
 	bool m_isSpawning;
+	glm::vec2 m_respawnPosition;
 
 	glm::vec2 colliderOffset;
+
 	bool m_isBlood;
 	std::shared_ptr<RenderEngine::Sprite> m_pSpriteBlood;
 	Timer m_bloodTimer;
 	glm::vec2 m_bloodPosition;
+
+	EUnitType m_unitType;
 };

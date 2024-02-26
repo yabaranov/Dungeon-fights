@@ -92,7 +92,26 @@
 			"subTextures" : [
 				"title"
 			]
-		}
+		}, 
+		{
+			"name" 				: "game_over",
+			"filePath"  		: "res/textures/game_over.png",
+			"subTextureWidth"   : 70,
+			"subTextureHeight"  : 35,
+			"subTextures" : [
+				"game_over"
+			]
+		}, 
+{
+			"name" 				: "win",
+			"filePath"  		: "res/textures/win.png",
+			"subTextureWidth"   : 70,
+			"subTextureHeight"  : 35,
+			"subTextures" : [
+				"win"
+			]
+		} 		
+		
 	],
 
 	"sprites" : [
@@ -309,6 +328,18 @@
             "textureAtlas"      : "title",
             "shader"            : "spriteShader",
             "initialSubTexture" : "title"
+        },
+		{
+            "name"              : "game_over",
+            "textureAtlas"      : "game_over",
+            "shader"            : "spriteShader",
+            "initialSubTexture" : "game_over"
+        },	
+		{
+            "name"              : "win",
+            "textureAtlas"      : "win",
+            "shader"            : "spriteShader",
+            "initialSubTexture" : "win"
         },		
         {
             "name"              : "player",

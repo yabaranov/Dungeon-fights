@@ -15,18 +15,17 @@ namespace RenderEngine
 
 class Game;
 
-class StartScreen : public IGameState
+class GameOver : public IGameState
 {
 public:
 	static constexpr unsigned int BLOCK_SIZE = 8;
 	static constexpr unsigned int SCREEN_WIDTH = 15 * BLOCK_SIZE * 2;
 	static constexpr unsigned int SCREEN_HEIGHT = 14 * BLOCK_SIZE * 2;
-	static constexpr unsigned int MENU_WIDTH = 128;
-	static constexpr unsigned int MENU_HEIGHT = 64;
-	static constexpr unsigned int TITLE_WIDTH = 140;
-	static constexpr unsigned int TITLE_HEIGHT = 70;
+	static constexpr unsigned int GAME_OVER_WIDTH = 140;
+	static constexpr unsigned int GAME_OVER_HEIGHT = 70;
 
-	StartScreen(Game* pGame);
+
+	GameOver(Game* pGame);
 	virtual void render() const override;
 	virtual void update(const double delta) override;
 	virtual void processInput(const std::array<bool, 349>& keys) override;
@@ -35,10 +34,5 @@ public:
 	virtual unsigned int getStateHeight() const override;
 private:
 	Game* m_pGame;
-	int m_currentMenuSelection;
-	bool m_keyReleased;
-
-	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_titleSprite;
-	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_menuSprite;
-	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_playerSprite;
+	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_Sprite;
 };

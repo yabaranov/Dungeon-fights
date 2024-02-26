@@ -5,9 +5,9 @@ class Enemy;
 class AIComponent
 {
 public:
-	AIComponent(Enemy* pParentTank);
+	AIComponent(Enemy* pOwner);
 	void update(const double delta);
 
 private:
-	Enemy* m_pParentTank;
+	Enemy* m_pOwner;
 };

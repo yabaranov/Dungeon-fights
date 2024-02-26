@@ -78,8 +78,7 @@ int main(int argc, char** argv)
         Physics::PhysicsEngine::init();
 
         g_game->init();
-        //glfwSetWindowSize(pWindow, static_cast<int>(3 * g_game->getCurrentWidth()), static_cast<int>(3 * g_game->getCurrentHeight()));
-
+       
         auto lastTime = std::chrono::high_resolution_clock::now();
 
 

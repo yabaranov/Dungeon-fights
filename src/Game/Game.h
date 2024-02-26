@@ -24,24 +24,18 @@ public:
 	size_t getCurrentWidth() const;
 	size_t getCurrentHeight() const;
 
-	void startNewLevel(const size_t level);
-	void nextLevel();
+	void level(const size_t level);
+	void gameOver();
+	void win();
+	void startScreen();
 	void setWindowSize(const glm::uvec2& windowSize);
 	void updateViewport();
 
 private:
-	enum class EGameState
-	{
-		StartScreen,
-		Level,
-		GameOver
-	};
 	std::array<bool, 349> m_keys;
 
-	EGameState m_eCurrentGameState;
 	glm::uvec2 m_windowSize;
 
 	std::shared_ptr<IGameState> m_pCurrentGameState;
 	std::shared_ptr<RenderEngine::ShaderProgram> m_pSpriteShaderProgram;
-	size_t m_currentLevel;
 };

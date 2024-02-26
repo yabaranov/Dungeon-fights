@@ -19,7 +19,7 @@ namespace Physics {
         m_pCurrentLevel.reset();
     }
 
-    void PhysicsEngine::setCurrentLevel(std::shared_ptr<Level> pLevel)
+    void PhysicsEngine::setLevel(std::shared_ptr<Level> pLevel)
     {
         m_pCurrentLevel.swap(pLevel);
         m_dynamicObjects.clear();
@@ -38,13 +38,11 @@ namespace Physics {
                 auto pObject2 = *it2;
                 if(pObject1->getOwner() == pObject2.get() || pObject2->getOwner() == pObject1.get())
                     continue;
-
+       
                 if (!hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
                     continue;
-         
                 if (hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getCurrentPosition()))
                     pObject1->getTargetPosition() = pObject1->getCurrentPosition();
-                
                 if (hasPositionIntersection(pObject2, pObject2->getTargetPosition(), pObject1, pObject1->getCurrentPosition()))
                     pObject2->getTargetPosition() = pObject2->getCurrentPosition();
             }
@@ -56,6 +54,11 @@ namespace Physics {
     void PhysicsEngine::addDynamicGameObject(std::shared_ptr<IGameObject> pGameObject)
     {
         m_dynamicObjects.insert(std::move(pGameObject));
+    }
+
+    void PhysicsEngine::removeDynamicGameObject(std::shared_ptr<IGameObject> pGameObject)
+    {
+        m_dynamicObjects.erase(pGameObject);
     }
 
 

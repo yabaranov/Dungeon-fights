@@ -7,6 +7,8 @@
 
 #include "GameStates/Level.h"
 #include "GameStates/StartScreen.h"
+#include "GameStates/GameOver.h"
+#include "GameStates/Win.h"
 #include "../Physics/PhysicsEngine.h"
 
 #include <GLFW/glfw3.h>
@@ -14,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_eCurrentGameState(EGameState::StartScreen), m_currentLevel(0)
+Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize)
 {
 	m_keys.fill(false);
 }
@@ -53,9 +55,7 @@ bool Game::init()
     m_pSpriteShaderProgram->use();
     m_pSpriteShaderProgram->setInt("tex", 0);
 
-    m_pCurrentGameState = std::make_shared<StartScreen>(this);
-    setWindowSize(m_windowSize);
-
+    startScreen();
     return true;
 }
 
@@ -69,19 +69,34 @@ size_t Game::getCurrentHeight() const
     return m_pCurrentGameState->getStateHeight();
 }
 
-void Game::startNewLevel(const size_t level)
+void Game::level(const size_t level)
 {
-    m_currentLevel = level;
-    auto pLevel = std::make_shared<Level>(ResourceManager::getLevels()[m_currentLevel]);
+    auto pLevel = std::make_shared<Level>(this, ResourceManager::getLevel(level));
     m_pCurrentGameState = pLevel;
-    Physics::PhysicsEngine::setCurrentLevel(pLevel);
+    Physics::PhysicsEngine::setLevel(pLevel);
     updateViewport();
 }
 
-void Game::nextLevel()
+void Game::gameOver()
 {
-    startNewLevel(++m_currentLevel);
+    m_pCurrentGameState = std::make_shared<GameOver>(this);
+    Physics::PhysicsEngine::terminate();
+    updateViewport();
 }
+
+void Game::win()
+{
+    m_pCurrentGameState = std::make_shared<Win>(this);
+    Physics::PhysicsEngine::terminate();
+    updateViewport();
+}
+
+void Game::startScreen()
+{
+    m_pCurrentGameState = std::make_shared<StartScreen>(this);
+    updateViewport();
+}
+
 
 void Game::setWindowSize(const glm::uvec2& windowSize)
 {

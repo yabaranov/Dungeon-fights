@@ -8,6 +8,8 @@
 #include "../GameObjects/Units/Enemy.h"
 #include "../GameObjects/Units/Player.h"
 
+#include "../Game.h"
+
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -63,8 +65,11 @@ std::shared_ptr<IGameObject> createGameObjectFromDescription(const char descript
 	return nullptr;
 }
 
-Level::Level(const std::vector<std::string>& levelDescription)
+Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_pGame(pGame), m_playerState(IUnit::EUnitState::Alive), m_playerLives(NUMBER_PLAYER_LIVES)
 {
+	m_enemyStates.fill(IUnit::EUnitState::Alive);
+	m_enemyLives.fill(NUMBER_ENEMY_LIVES);
+
 	if (levelDescription.empty())
 		std::cerr << "Empty level description!" << std::endl;
 
@@ -73,10 +78,10 @@ Level::Level(const std::vector<std::string>& levelDescription)
 	m_widthPixels = static_cast<unsigned int>(m_widthBlocks * BLOCK_SIZE);
 	m_heightPixels = static_cast<unsigned int>(m_heightBlocks * BLOCK_SIZE);
 
-	m_playerRespawn = { BLOCK_SIZE * (m_widthBlocks / 2 + 1), BLOCK_SIZE / 2 };
-	m_enemyRespawn_1 =  { BLOCK_SIZE,                     BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2 };
-	m_enemyRespawn_2 =  { BLOCK_SIZE* (m_widthBlocks / 2 + 1),  BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
-	m_enemyRespawn_3 =  { BLOCK_SIZE * m_widthBlocks,           BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2 };
+	m_playerRespawn =  { BLOCK_SIZE * (m_widthBlocks / 2 + 1),  BLOCK_SIZE / 2 };
+	m_enemyRespawns[0] = {BLOCK_SIZE,						    BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
+	m_enemyRespawns[1] = {BLOCK_SIZE * (m_widthBlocks / 2 + 1), BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
+	m_enemyRespawns[2] = {BLOCK_SIZE * m_widthBlocks,           BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
 
 	m_levelObjects.reserve(m_widthBlocks * m_heightBlocks + 4);
 	unsigned int currentBottomOffset = static_cast<unsigned int>(BLOCK_SIZE) * (m_heightBlocks - 1.f/2.f);
@@ -91,16 +96,10 @@ Level::Level(const std::vector<std::string>& levelDescription)
 				m_playerRespawn = { currentLeftOffset, currentBottomOffset };
 				m_levelObjects.emplace_back(nullptr);
 				break;
-			case 'M':
-				m_enemyRespawn_1 = { currentLeftOffset, currentBottomOffset };
-				m_levelObjects.emplace_back(nullptr);
-				break;
-			case 'N':
-				m_enemyRespawn_2 = { currentLeftOffset, currentBottomOffset };
-				m_levelObjects.emplace_back(nullptr);
-				break;
+			case 'M':				
+			case 'N':				
 			case 'O':
-				m_enemyRespawn_3 = { currentLeftOffset, currentBottomOffset };
+				m_enemyRespawns[currentElement - 'M'] = { currentLeftOffset, currentBottomOffset };
 				m_levelObjects.emplace_back(nullptr);
 				break;
 			default:
@@ -129,10 +128,12 @@ void Level::render() const
 		if (currentObject)
 			currentObject->render();
 
-	m_pPlayer->render();
+	if (m_playerLives > 0)
+		m_pPlayer->render();
 	
-	for (const auto& currentEnemyTank : m_enemies)
-		currentEnemyTank->render();
+	for (size_t i = 0; i < m_enemies.size(); i++)
+		if (m_enemyLives[i] > 0)
+			m_enemies[i]->render();
 }
 
 void Level::update(const double delta)
@@ -141,10 +142,39 @@ void Level::update(const double delta)
 		if (currentObject)
 			currentObject->update(delta);
 
-	m_pPlayer->update(delta);
+	if (m_playerState != m_pPlayer->getUnitState())
+	{
+		m_playerState = m_pPlayer->getUnitState();
+		if(m_playerState == IUnit::EUnitState::Dead)
+			m_playerLives--;
+	}
+		
+	if (m_playerLives > 0)
+		m_pPlayer->update(delta);
 
-	for (const auto& currentEnemyTank : m_enemies)
-		currentEnemyTank->update(delta);
+	for (size_t i = 0; i < m_enemies.size(); i++)
+		if (m_enemyStates[i] != m_enemies[i]->getUnitState())
+		{
+			m_enemyStates[i] = m_enemies[i]->getUnitState();
+			if(m_enemyStates[i] == IUnit::EUnitState::Dead)
+				m_enemyLives[i]--;
+			if(m_enemyLives[i] <= 0)
+				Physics::PhysicsEngine::removeDynamicGameObject(m_enemies[i]);
+		}
+
+	unsigned int killÑount = 0;
+
+	for (size_t i = 0; i < m_enemies.size(); i++)
+		if (m_enemyLives[i] > 0)
+			m_enemies[i]->update(delta);
+		else
+			killÑount++;
+
+	if(killÑount == m_enemies.size())
+		m_pGame->win();
+
+	if (m_playerLives <= 0)
+		m_pGame->gameOver();
 }
 
 unsigned int Level::getStateWidth() const
@@ -200,47 +230,49 @@ std::vector<std::shared_ptr<IGameObject>> Level::getObjectsInArea(const glm::vec
 
 void Level::processInput(const std::array<bool, 349>& keys)
 {
-	
-	if (keys[GLFW_KEY_W])
+	if (m_playerState == IUnit::EUnitState::Alive)
 	{
-		m_pPlayer->setOrientation(Player::EOrientation::Top);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_A])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Left);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_S])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Bottom);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_D])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Right);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else
-	{
-		m_pPlayer->setVelocity(0);
-	}
+		if (keys[GLFW_KEY_W])
+		{
+			m_pPlayer->setOrientation(Player::EOrientation::Top);
+			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+		}
+		else if (keys[GLFW_KEY_A])
+		{
+			m_pPlayer->setOrientation(Player::EOrientation::Left);
+			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+		}
+		else if (keys[GLFW_KEY_S])
+		{
+			m_pPlayer->setOrientation(Player::EOrientation::Bottom);
+			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+		}
+		else if (keys[GLFW_KEY_D])
+		{
+			m_pPlayer->setOrientation(Player::EOrientation::Right);
+			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+		}
+		else
+		{
+			m_pPlayer->setVelocity(0);
+		}
 
-	if (m_pPlayer && keys[GLFW_KEY_SPACE])
-	{
-		m_pPlayer->fire();
+		if (m_pPlayer && keys[GLFW_KEY_SPACE])
+		{
+			m_pPlayer->fire();
+		}
 	}
+	
 	
 }
 
 void Level::initLevel()
 {
-	m_pPlayer = std::make_shared<Player>(Player::EOrientation::Top, 0.05, getPlayerRespawn(), glm::vec2(BLOCK_SIZE), 0.f);
+	m_pPlayer = std::make_shared<Player>(Player::EOrientation::Top, 0.05, m_playerRespawn, glm::vec2(BLOCK_SIZE), 0.f);
 	Physics::PhysicsEngine::addDynamicGameObject(m_pPlayer);
-
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_1(), glm::vec2(BLOCK_SIZE), 0.f));
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_2(), glm::vec2(BLOCK_SIZE), 0.f));
-	m_enemies.emplace(std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, getEnemyRespawn_3(), glm::vec2(BLOCK_SIZE), 0.f));
+	
+	for(size_t i = 0; i < m_enemyRespawns.size(); i++)
+		m_enemies[i] = (std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
 
 	for (const auto& currentEnemyTank: m_enemies)
 		Physics::PhysicsEngine::addDynamicGameObject(currentEnemyTank);

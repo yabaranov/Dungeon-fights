@@ -41,7 +41,7 @@ public:
 
 	static bool loadJSONResources(const std::string& JSONPath);
 
-	static const std::vector<std::vector<std::string>>& getLevels() { return m_levels; }
+	static const std::vector<std::string>& getLevel(const size_t i) { return m_levels[i]; }
 
 private:
 	static std::string getFileString(const std::string& relativePath);

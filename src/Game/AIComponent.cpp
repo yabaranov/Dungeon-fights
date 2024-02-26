@@ -1,12 +1,12 @@
 #include "AIComponent.h"
 #include "GameObjects/Units/Enemy.h"
 
-AIComponent::AIComponent(Enemy* pParentTank) : m_pParentTank(pParentTank)
+AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 {
 }
 
 void AIComponent::update(const double delta)
 {
-	m_pParentTank->fire();
-
+	if(m_pOwner->getUnitState() == IUnit::EUnitState::Alive)
+		m_pOwner->fire();
 }
