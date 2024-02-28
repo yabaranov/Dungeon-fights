@@ -67,7 +67,7 @@ namespace Physics
 		static bool hasCollidersIntersection(const Collider& collider1, const glm::vec2& position1,
 			const Collider& collider2, const glm::vec2& position2);
 
-		static bool hasPositionIntersection(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1,
+		static bool intersectionReactions(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1,
 			const std::shared_ptr<IGameObject>& pObject2, const glm::vec2& position2);
 
 		static void calculateTargetPositions(const double delta);

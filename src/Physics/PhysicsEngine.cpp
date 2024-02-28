@@ -3,6 +3,8 @@
 #include "../Game/GameObjects/IGameObject.h"
 #include "../Game/GameStates/Level.h"
 
+#include <iostream>
+
 namespace Physics {
 
     std::unordered_set<std::shared_ptr<IGameObject>> PhysicsEngine::m_dynamicObjects;
@@ -39,12 +41,11 @@ namespace Physics {
                 if(pObject1->getOwner() == pObject2.get() || pObject2->getOwner() == pObject1.get())
                     continue;
        
-                if (!hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
-                    continue;
-                if (hasPositionIntersection(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getCurrentPosition()))
+                if (intersectionReactions(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
+                {
                     pObject1->getTargetPosition() = pObject1->getCurrentPosition();
-                if (hasPositionIntersection(pObject2, pObject2->getTargetPosition(), pObject1, pObject1->getCurrentPosition()))
                     pObject2->getTargetPosition() = pObject2->getCurrentPosition();
+                }
             }
         }
 
@@ -92,7 +93,7 @@ namespace Physics {
         return true;
     }
 
-    bool PhysicsEngine::hasPositionIntersection(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1, const std::shared_ptr<IGameObject>& pObject2, const glm::vec2& position2)
+    bool PhysicsEngine::intersectionReactions(const std::shared_ptr<IGameObject>& pObject1, const glm::vec2& position1, const std::shared_ptr<IGameObject>& pObject2, const glm::vec2& position2)
     {
         ECollisionDirection collisionDirectionObject_1 = ECollisionDirection::Right;
         if (pObject1->getCurrentDirection().x < 0) collisionDirectionObject_1 = ECollisionDirection::Left;
@@ -137,7 +138,7 @@ namespace Physics {
                 bool hasCollision = false;
 
                 for (const auto& currentObjectToCheck : objectsToCheck)                                 
-                    if (hasPositionIntersection(currentDynamicObject, newPosition, currentObjectToCheck, currentObjectToCheck->getCurrentPosition()))
+                    if (intersectionReactions(currentDynamicObject, newPosition, currentObjectToCheck, currentObjectToCheck->getCurrentPosition()))
                         hasCollision = true;                    
                 
                 if (!hasCollision)               
@@ -147,8 +148,7 @@ namespace Physics {
                     if (currentDynamicObject->getCurrentDirection().x != 0.f)               
                         currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getTargetPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getTargetPosition().y);                
                     else if (currentDynamicObject->getCurrentDirection().y != 0.f)                   
-                        currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getTargetPosition().x, static_cast<unsigned int>(currentDynamicObject->getTargetPosition().y / 4.f + 0.5f) * 4.f);
-                    
+                        currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getTargetPosition().x, static_cast<unsigned int>(currentDynamicObject->getTargetPosition().y / 4.f + 0.5f) * 4.f);                   
                 }
             }
         }
