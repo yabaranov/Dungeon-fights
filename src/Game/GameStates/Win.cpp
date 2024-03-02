@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 
 Win::Win(Game* pGame) : m_pGame(pGame),
-    m_Sprite(std::make_pair(ResourceManager::getSprite("win"), glm::vec2(6 * BLOCK_SIZE, SCREEN_HEIGHT - 16 * BLOCK_SIZE)))
+    m_Sprite(std::make_pair(ResourceManager::getSprite("win"), glm::vec2(5 * BLOCK_SIZE, SCREEN_HEIGHT - 16 * BLOCK_SIZE)))
 {
 }
 
@@ -26,7 +26,7 @@ void Win::update(const double delta)
 void Win::processInput(const std::array<bool, 349>& keys)
 {    
     if (keys[GLFW_KEY_ENTER])
-        if (m_pGame->getCurrentLevel() < m_pGame->getMaxLevel())
+        if (m_pGame->getCurrentLevel() + 1 < m_pGame->getMaxLevel())
             m_pGame->level(m_pGame->getCurrentLevel() + 1);
         else
             m_pGame->startScreen();    

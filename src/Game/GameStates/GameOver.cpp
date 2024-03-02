@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 
 GameOver::GameOver(Game* pGame) : m_pGame(pGame),
-    m_Sprite(std::make_pair(ResourceManager::getSprite("game_over"), glm::vec2(6 * BLOCK_SIZE, SCREEN_HEIGHT - 16 * BLOCK_SIZE)))
+    m_Sprite(std::make_pair(ResourceManager::getSprite("game_over"), glm::vec2(5 * BLOCK_SIZE, SCREEN_HEIGHT - 16 * BLOCK_SIZE)))
 {
 }
 

@@ -399,43 +399,5 @@
 			"shader" 			: "spriteShader",
 			"initialSubTexture" : "enemy_death"			
 		}
-	],
-	"levels" : [		
-		{
-			"description" : [
-				"MDD4DDNDD4DDO",
-				"DDD4DDDDD4DDD",
-				"1BD4D999D4DB1",
-				"BDD4DDDDD4DDB",
-				"DDDDDDDDDDDDD",
-				"AABBBAAABBBAA",
-				"AABBBAAABBBAA",
-				"DD2DDDDDDD0DD",
-				"DB2D44944D0BD",
-				"DDDDDDDDDDDDD",
-				"8888DB4BD8888",
-				"DDDDD444DDDDD",
-				"AAADDDDDDDAAA",
-				"BBBDDDKDDDBBB"
-			]
-		}, 
-		{
-			"description" : [
-				"DDD4DDNDD4DDO",
-				"DMD4DDDDD4DDD",
-				"1BD4D999D4DB1",
-				"BDD4DDDDD4DDB",
-				"DDDDDDDDDDDDD",
-				"AABBBAAABBBAA",
-				"AABBBAAABBBAA",
-				"DD2DDDDDDD0DD",
-				"DB2D44944D0BD",
-				"DDDDDDDDDDDDD",
-				"8888DB4BD8888",
-				"DDDDD444DDDDD",
-				"AAADDDDDDDAAA",
-				"BBBDDDKDDDBBB"
-				]
-		}
-	]
+	]	
 }

@@ -1,0 +1,29 @@
+{
+	"enemyLives": 3, 
+	"playerLives" : 5,
+	"enemyHealth": 10, 
+	"playerHealth" : 20,
+	"enemyDamage": 5, 
+	"playerDamage" : 5,
+	
+	"levels" : [		
+			{
+				"description" : [
+					"EDD4DDEDD4DDE",
+					"DDD4DDDDD4DDD",
+					"1BD4D999D4DB1",
+					"BDD4DDDDD4DDB",
+					"DDDDDDDDDDDDD",
+					"AABBBAAABBBAA",
+					"AABBBAAABBBAA",
+					"DD2DDDDDDD0DD",
+					"DB2D44944D0BD",
+					"DDDDDDDDDDDDD",
+					"8888DB4BD8888",
+					"DDDDD444DDDDD",
+					"AAADDDDDDDAAA",
+					"BBBDDDPDDDBBB"
+				]
+			}
+		]
+}

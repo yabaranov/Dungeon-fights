@@ -15,6 +15,6 @@ private:
 	static constexpr unsigned int BLOCK_SIZE = 16;
 	Enemy* m_pOwner;
 	Timer m_moveTimer;
-
+	Timer m_hitTimer;
 
 };

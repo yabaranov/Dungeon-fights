@@ -14,7 +14,7 @@ StartScreen::StartScreen(Game* pGame) : m_pGame(pGame),
     m_keyReleased(false),
     m_titleSprite(std::make_pair(ResourceManager::getSprite("title"), glm::vec2(5 * BLOCK_SIZE, SCREEN_HEIGHT - 13 * BLOCK_SIZE))),
     m_menuSprite(std::make_pair(ResourceManager::getSprite("menu"), glm::vec2(10 * BLOCK_SIZE, SCREEN_HEIGHT - 9 * BLOCK_SIZE - MENU_HEIGHT - 5 * BLOCK_SIZE))),
-    m_playerSprite(std::make_pair(ResourceManager::getSprite("player"), glm::vec2(7 * BLOCK_SIZE, m_menuSprite.second.y + 6 * BLOCK_SIZE - m_currentMenuSelection * 2 * BLOCK_SIZE)))
+    m_playerSprite(std::make_pair(ResourceManager::getSprite("player"), glm::vec2(6 * BLOCK_SIZE, m_menuSprite.second.y + 6 * BLOCK_SIZE - m_currentMenuSelection * 2 * BLOCK_SIZE)))
 {
 }
 

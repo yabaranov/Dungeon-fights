@@ -14,22 +14,25 @@ public:
 		Border,
 		BrickWall,
 		Bullet,
-		Unit,
+		Player,
+		Enemy,
 		Trees,
 		Water,
 		Blood
 	};
 
 	IGameObject(const EObjectType objectType, const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer);
-	void setOwner(IGameObject* pOwner) { m_pOwner = pOwner; }
-	IGameObject* getOwner() const { return m_pOwner; }
 
 	virtual void render() const = 0;
 	virtual void update(const double delta) {};
 	virtual ~IGameObject();
-	virtual glm::vec2& getCurrentPosition()  { return m_position; }
-	virtual glm::vec2& getTargetPosition() { return m_targetPosition; }
-	virtual glm::vec2& getCurrentDirection() { return m_direction; }
+	const glm::vec2& getCurrentPosition() const { return m_position; }
+	const glm::vec2& getTargetPosition() const { return m_targetPosition; }
+	const glm::vec2& getCurrentDirection() const { return m_direction; }
+
+	void setCurrentPosition(const glm::vec2& position) { m_position = position; }
+	void setTargetPosition(const glm::vec2& targetPosition) { m_targetPosition = targetPosition; }
+	void setCurrentDirection(const glm::vec2& direction) { m_direction = direction; }
 	virtual double getCurrentVelocity() const { return m_velocity; }
 	virtual void setVelocity(const double velocity);
 
@@ -38,19 +41,15 @@ public:
 	EObjectType getObjectType() const { return m_objectType; }
 	virtual bool collides(const EObjectType objectType) { return true; }
 	virtual void onCollision() {}
-	unsigned int getDamage() { return m_damage; }
 
 protected:
-	IGameObject* m_pOwner;
 	glm::vec2 m_position;
 	glm::vec2 m_targetPosition;
+	double m_velocity;
 	glm::vec2 m_size;
 	float m_rotation;
 	float m_layer;
 	EObjectType m_objectType;
-
-	unsigned int m_damage;
-	glm::vec2 m_direction;
-	double m_velocity;
+	glm::vec2 m_direction;	
 	std::vector<Physics::Collider> m_colliders;
 };

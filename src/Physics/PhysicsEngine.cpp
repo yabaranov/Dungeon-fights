@@ -40,8 +40,8 @@ namespace Physics {
                 auto pObject2 = *it2;
                 if (intersectionReactions(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
                 {
-                    pObject1->getTargetPosition() = pObject1->getCurrentPosition();
-                    pObject2->getTargetPosition() = pObject2->getCurrentPosition();
+                    pObject1->setTargetPosition(pObject1->getCurrentPosition());
+                    pObject2->setTargetPosition(pObject2->getCurrentPosition());
                 }
             }
         }
@@ -125,9 +125,9 @@ namespace Physics {
             if (currentDynamicObject->getCurrentVelocity() > 0)
             {
                 if (currentDynamicObject->getCurrentDirection().x != 0.f)               
-                    currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getCurrentPosition().x, static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().y / 4.f + 0.5f) * 4.f);               
+                    currentDynamicObject->setTargetPosition(glm::vec2(currentDynamicObject->getCurrentPosition().x, static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().y / 4.f + 0.5f) * 4.f));
                 else if (currentDynamicObject->getCurrentDirection().y != 0.f)              
-                    currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getCurrentPosition().y);
+                    currentDynamicObject->setTargetPosition(glm::vec2(static_cast<unsigned int>(currentDynamicObject->getCurrentPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getCurrentPosition().y));
                 
                 const auto newPosition = currentDynamicObject->getTargetPosition() + currentDynamicObject->getCurrentDirection() * static_cast<float>(currentDynamicObject->getCurrentVelocity() * delta);
                 std::vector<std::shared_ptr<IGameObject>> objectsToCheck = m_pCurrentLevel->getObjectsInArea(newPosition, newPosition + currentDynamicObject->getSize());
@@ -139,13 +139,13 @@ namespace Physics {
                         hasCollision = true;                    
                 
                 if (!hasCollision)               
-                    currentDynamicObject->getTargetPosition() = newPosition;               
+                    currentDynamicObject->setTargetPosition(newPosition);
                 else
                 {
                     if (currentDynamicObject->getCurrentDirection().x != 0.f)               
-                        currentDynamicObject->getTargetPosition() = glm::vec2(static_cast<unsigned int>(currentDynamicObject->getTargetPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getTargetPosition().y);                
+                        currentDynamicObject->setTargetPosition(glm::vec2(static_cast<unsigned int>(currentDynamicObject->getTargetPosition().x / 4.f + 0.5f) * 4.f, currentDynamicObject->getTargetPosition().y));
                     else if (currentDynamicObject->getCurrentDirection().y != 0.f)                   
-                        currentDynamicObject->getTargetPosition() = glm::vec2(currentDynamicObject->getTargetPosition().x, static_cast<unsigned int>(currentDynamicObject->getTargetPosition().y / 4.f + 0.5f) * 4.f);                   
+                        currentDynamicObject->setTargetPosition(glm::vec2(currentDynamicObject->getTargetPosition().x, static_cast<unsigned int>(currentDynamicObject->getTargetPosition().y / 4.f + 0.5f) * 4.f));
                 }
             }
         }
@@ -155,6 +155,6 @@ namespace Physics {
     void PhysicsEngine::updatePositions()
     {
         for (auto& currentDynamicObject : m_dynamicObjects)
-            currentDynamicObject->getCurrentPosition() = currentDynamicObject->getTargetPosition();
+            currentDynamicObject->setCurrentPosition(currentDynamicObject->getTargetPosition());
     }
 }

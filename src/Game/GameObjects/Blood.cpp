@@ -15,7 +15,7 @@ Blood::Blood(const glm::vec2& position, const glm::vec2& size, const float rotat
 		}
 	);
 
-	m_timer.start(10000);
+	m_timer.start(m_pSpriteAnimator.getTotalDuration());
 
 }
 

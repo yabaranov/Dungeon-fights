@@ -54,6 +54,7 @@ bool Game::init()
     }
     m_pSpriteShaderProgram->use();
     m_pSpriteShaderProgram->setInt("tex", 0);
+    ResourceManager::loadJSONGameSettings("res/gameSettings.json");
 
     m_maxLevel = ResourceManager::getLevels().size();
     startScreen();

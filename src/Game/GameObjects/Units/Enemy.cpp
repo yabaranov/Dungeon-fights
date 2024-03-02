@@ -9,8 +9,8 @@ Enemy::Enemy(Player* pPlayer,
 	const glm::vec2& position,
 	const glm::vec2& size, 
 	const float layer) : 
-	m_pPlayer(pPlayer),
-	IUnit(EUnitType::Enemy, "enemy", eOrientation, maxVelocity, position, size, layer)
+	IUnit(IGameObject::EObjectType::Enemy, "enemy", eOrientation, maxVelocity, position, size, layer),
+	m_pPlayer(pPlayer)	
 {
 	m_pAIComponent = std::make_unique<AIComponent>(this);	
 

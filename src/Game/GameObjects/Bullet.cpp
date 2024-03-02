@@ -3,7 +3,8 @@
 #include "../../Resources/ResourceManager.h"
 #include "../../Renderer/Sprite.h"
 
-Bullet::Bullet(const double velocity,
+Bullet::Bullet(IUnit* pOwner, 
+    const double velocity,
     const glm::vec2& position,
     const glm::vec2& size,
     const glm::vec2& explosionSize,
@@ -16,10 +17,16 @@ Bullet::Bullet(const double velocity,
     m_maxVelocity(velocity),
     m_isActive(false),
     m_isExplosion(false), 
-    colliderOffset(3.f)
+    colliderOffset(3.f), 
+    m_pOwner(pOwner)
 {
     auto onCollisionCallback = [&](const IGameObject& object, const Physics::ECollisionDirection)
         {
+            if(object.getObjectType() == IGameObject::EObjectType::Player)
+                m_pOwner->setHit(true);
+            else 
+                m_pOwner->setHit(false);
+
             setVelocity(0);
             m_colliders[0].isActive = false;
             m_isExplosion = true;

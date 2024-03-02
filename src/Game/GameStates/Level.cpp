@@ -9,6 +9,7 @@
 #include "../GameObjects/Units/Player.h"
 
 #include "../Game.h"
+#include "../../Resources/ResourceManager.h"
 
 #include <GLFW/glfw3.h>
 
@@ -20,8 +21,7 @@ std::shared_ptr<IGameObject> createGameObjectFromDescription(const char descript
 	const glm::vec2& size, const float rotation)
 {
 	switch (description)
-	{
-		
+	{		
 	case '0':
 		return std::make_shared<BrickWall>(BrickWall::EBrickWallType::Right, position, size, rotation, 0.f);
 	case '1':
@@ -54,8 +54,6 @@ std::shared_ptr<IGameObject> createGameObjectFromDescription(const char descript
 		return std::make_shared<Water>(position, size, rotation, 0.f);
 	case 'B':
 		return std::make_shared<Trees>(position, size, rotation, 1.f);
-	case 'C':		
-	case 'E':	
 	case 'D':
 		return nullptr;
 	default:
@@ -65,11 +63,8 @@ std::shared_ptr<IGameObject> createGameObjectFromDescription(const char descript
 	return nullptr;
 }
 
-Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_pGame(pGame), m_playerState(IUnit::EUnitState::Alive), m_playerLives(NUMBER_PLAYER_LIVES), m_nextStateTimer(std::make_pair(true, Timer()))
+Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_pGame(pGame), m_playerState(IUnit::EUnitState::Alive), m_playerLives(ResourceManager::getPlayerLives()), m_nextStateTimer(std::make_pair(true, Timer()))
 {
-	m_enemyStates.fill(IUnit::EUnitState::Alive);
-	m_enemyLives.fill(NUMBER_ENEMY_LIVES);
-
 	if (levelDescription.empty())
 		std::cerr << "Empty level description!" << std::endl;
 
@@ -79,12 +74,9 @@ Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_
 	m_heightPixels = static_cast<unsigned int>(m_heightBlocks * BLOCK_SIZE);
 
 	m_playerRespawn =  { BLOCK_SIZE * (m_widthBlocks / 2 + 1),  BLOCK_SIZE / 2 };
-	m_enemyRespawns[0] = {BLOCK_SIZE,						    BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
-	m_enemyRespawns[1] = {BLOCK_SIZE * (m_widthBlocks / 2 + 1), BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
-	m_enemyRespawns[2] = {BLOCK_SIZE * m_widthBlocks,           BLOCK_SIZE * m_heightBlocks - BLOCK_SIZE / 2};
 
 	m_levelObjects.reserve(m_widthBlocks * m_heightBlocks + 4);
-	unsigned int currentBottomOffset = static_cast<unsigned int>(BLOCK_SIZE) * (m_heightBlocks - 1.f/2.f);
+	unsigned int currentBottomOffset = static_cast<unsigned int>(BLOCK_SIZE) * (m_heightBlocks - 1.f / 2.f);
 	for (const auto& currentRow : levelDescription)
 	{
 		unsigned int currentLeftOffset = BLOCK_SIZE;
@@ -92,14 +84,12 @@ Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_
 		{
 			switch (currentElement)
 			{
-			case 'K':
+			case 'P':
 				m_playerRespawn = { currentLeftOffset, currentBottomOffset };
 				m_levelObjects.emplace_back(nullptr);
 				break;
-			case 'M':				
-			case 'N':				
-			case 'O':
-				m_enemyRespawns[currentElement - 'M'] = { currentLeftOffset, currentBottomOffset };
+			case 'E':				
+				m_enemyRespawns.emplace_back(currentLeftOffset, currentBottomOffset );
 				m_levelObjects.emplace_back(nullptr);
 				break;
 			default:
@@ -111,6 +101,11 @@ Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_
 		}
 		currentBottomOffset -= BLOCK_SIZE;
 	}
+
+	m_enemyStates = std::vector<IUnit::EUnitState>(m_enemyRespawns.size(), IUnit::EUnitState::Alive);
+	m_enemyLives = std::vector<unsigned int>(m_enemyRespawns.size(), ResourceManager::getEnemyLives());
+	m_enemyDeathTimers = std::vector<Timer>(m_enemyRespawns.size());
+
 	//bottom border
 	m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2(BLOCK_SIZE, 0.f), glm::vec2(BLOCK_SIZE * m_widthBlocks, BLOCK_SIZE / 2.f), 0.f, 0.f));
 	//top border
@@ -189,29 +184,21 @@ void Level::update(const double delta)
 		else
 			killÑount++;
 
-	if(killÑount == m_enemies.size())
-		if (m_nextStateTimer.first && !m_nextStateTimer.second.isRunning())
-		{
-			m_nextStateTimer.second.start(5000);
-			m_nextStateTimer.first = false;
-		}
-		else if (m_nextStateTimer.second.isRunning())
-			m_nextStateTimer.second.update(delta);
-		else
-			m_pGame->win();
-	else if (m_playerLives <= 0)
+	if (killÑount == m_enemies.size() || m_playerLives == 0)
 	{
 		if (m_nextStateTimer.first && !m_nextStateTimer.second.isRunning())
 		{
-			m_nextStateTimer.second.start(5000);
+			m_nextStateTimer.second.start(2000);
 			m_nextStateTimer.first = false;
 		}
 		else if (m_nextStateTimer.second.isRunning())
 			m_nextStateTimer.second.update(delta);
-		else 
+		else if(killÑount == m_enemies.size())
+			m_pGame->win();
+		else if(m_playerLives == 0)
 			m_pGame->gameOver();
-	}
 
+	}
 }
 
 unsigned int Level::getStateWidth() const
@@ -305,7 +292,7 @@ void Level::initLevel()
 	Physics::PhysicsEngine::addDynamicGameObject(m_pPlayer);
 	
 	for(size_t i = 0; i < m_enemyRespawns.size(); i++)
-		m_enemies[i] = (std::make_shared<Enemy>(m_pPlayer.get(), Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
+		m_enemies.emplace_back(std::make_shared<Enemy>(m_pPlayer.get(), Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
 
 	for (const auto& currentEnemy: m_enemies)
 		Physics::PhysicsEngine::addDynamicGameObject(currentEnemy);

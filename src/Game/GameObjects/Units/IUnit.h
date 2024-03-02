@@ -31,25 +31,7 @@ public:
 		Top, Bottom, Left, Right
 	};
 
-	enum class EUnitType : uint8_t
-	{
-		Player,
-		Enemy
-	};
-
-	enum class EUnitHealth : uint8_t
-	{
-		Player = 20,
-		Enemy = 10
-	};
-
-	enum class EUnitDamage : uint8_t
-	{
-		Player = 5,
-		Enemy = 5
-	};
-
-	IUnit(const EUnitType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
+	IUnit(const IGameObject::EObjectType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
 		const glm::vec2& position, const glm::vec2& size, const float layer);
 
 	virtual void render() const override;
@@ -60,12 +42,17 @@ public:
 	double getMaxVelocity() const { return m_maxVelocity; }
 	void fire();
 	EUnitState getUnitState() { return m_eUnitState; }
-	bool bulletIsActive();
-protected:
-	void bulletReaction(const IGameObject& object);
+	unsigned int getDamage() { return m_damage; }
+	bool hasHit() { return m_hit; }
+	void setHit(bool hit) { m_hit = hit; }
 
+protected:
+
+	void bulletReaction(const IGameObject& object);
+	bool m_hit;
 	EUnitState m_eUnitState;
 	int m_health;
+	unsigned int m_damage;
 	EOrientation m_eOrientation;
 	std::shared_ptr<Bullet> m_pCurrentBullet;
 	std::shared_ptr<RenderEngine::Sprite> m_pSprite;
@@ -88,6 +75,4 @@ protected:
 	glm::vec2 colliderOffset;
 
 	std::vector<std::shared_ptr<Blood>> m_blood;
-
-	EUnitType m_unitType;
 };

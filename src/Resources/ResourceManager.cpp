@@ -20,6 +20,13 @@ ResourceManager::SpritesMap ResourceManager::m_sprites;
 std::vector<std::vector<std::string>> ResourceManager::m_levels;
 std::string ResourceManager::m_path;
 
+unsigned int ResourceManager::m_enemyLives = 0;
+unsigned int ResourceManager::m_playerLives = 0;
+unsigned int ResourceManager::m_enemyHealth = 0;
+unsigned int ResourceManager::m_playerHealth = 0;
+unsigned int ResourceManager::m_enemyDamage = 0;
+unsigned int ResourceManager::m_playerDamage = 0;
+
 void ResourceManager::setExecutablePath(const std::string& executablePath)
 {
 	size_t found = executablePath.find_last_of("/\\");
@@ -280,6 +287,52 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
 		}
 	}
 
+	return true;
+}
+
+bool ResourceManager::loadJSONGameSettings(const std::string& JSONPath)
+{
+	const std::string JSONString = getFileString(JSONPath);
+
+	if (JSONString.empty())
+	{
+		std::cerr << "No JSON resources file!" << std::endl;
+		return false;
+	}
+
+	rapidjson::Document document;
+	rapidjson::ParseResult parseResult = document.Parse(JSONString.c_str());
+	if (!parseResult)
+	{
+		std::cerr << "JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) << "(" << parseResult.Offset() << ")" << std::endl;
+		std::cerr << "In JSON file: " << JSONPath << std::endl;
+		return false;
+	}
+
+	auto enemyLivesIt = document.FindMember("enemyLives");
+	if (enemyLivesIt != document.MemberEnd())	
+		m_enemyLives = enemyLivesIt->value.GetUint();
+
+	auto playerLivesIt = document.FindMember("playerLives");
+	if (playerLivesIt != document.MemberEnd())
+		m_playerLives = playerLivesIt->value.GetUint();
+
+	auto enemyHealthIt = document.FindMember("enemyHealth");
+	if (enemyHealthIt != document.MemberEnd())
+		m_enemyHealth = enemyHealthIt->value.GetUint();
+
+	auto playerHealthIt = document.FindMember("playerHealth");
+	if (playerHealthIt != document.MemberEnd())
+		m_playerHealth = playerHealthIt->value.GetUint();
+
+	auto enemyDamageIt = document.FindMember("enemyDamage");
+	if (enemyDamageIt != document.MemberEnd())
+		m_enemyDamage = enemyDamageIt->value.GetUint();
+
+	auto playerDamageIt = document.FindMember("playerDamage");
+	if (playerDamageIt != document.MemberEnd())
+		m_playerDamage = playerDamageIt->value.GetUint();
+
 	auto levelsIt = document.FindMember("levels");
 	if (levelsIt != document.MemberEnd())
 	{
@@ -294,7 +347,7 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
 				levelRows.emplace_back(currentRow.GetString());
 				maxLength = std::max(maxLength, levelRows.back().length());
 			}
-				
+
 			for (auto& currentRow : levelRows)
 			{
 				while (currentRow.length() < maxLength)
@@ -303,7 +356,6 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
 			m_levels.emplace_back(std::move(levelRows));
 		}
 	}
-
 
 	return true;
 }
