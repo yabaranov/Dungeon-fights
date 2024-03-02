@@ -38,28 +38,10 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 		{
 			m_isSpawning = false;
 			m_eUnitState = EUnitState::Alive;
-
+			m_velocity = m_maxVelocity;
 		});
 
 	m_respawnTimer.start(1500);
-
-	auto onCollisionCallback = [&](const IGameObject& object, const Physics::ECollisionDirection)
-		{
-			if (object.getObjectType() == IGameObject::EObjectType::Bullet && !m_isSpawning && m_eUnitState == EUnitState::Alive)
-			{
-				m_blood.emplace_back(std::make_shared<Blood>(m_position, m_size, m_rotation, m_layer - 0.01f));
-				m_health -= object.getOwner()->getDamage();
-				if (m_health <= 0)
-				{
-					m_eUnitState = EUnitState::Dead;
-					m_deathPosition = m_position;
-					m_targetPosition = m_position = m_respawnPosition;
-					m_deathTimer.start(2000);
-				}
-					
-			}
-			
-		};
 
 	m_deathTimer.setCallback([&]()
 		{
@@ -78,8 +60,6 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 	);
 
 	setOrientation(eOrientation);
-
-	m_colliders.emplace_back(colliderOffset, m_size - colliderOffset, onCollisionCallback);
 
 	m_pCurrentBullet->setOwner(this);
 	Physics::PhysicsEngine::addDynamicGameObject(m_pCurrentBullet);
@@ -205,7 +185,28 @@ void IUnit::fire()
 
 		m_shotTimer.start(150);
 
-		m_pCurrentBullet->fire(m_position + m_size / 4.f + m_size * m_direction / 4.f, m_direction);
+		m_pCurrentBullet->fire(m_position + m_size / 4.f + m_size * m_direction / 2.f, m_direction);
+	}
+}
+
+bool IUnit::bulletIsActive()
+{
+	return m_pCurrentBullet->isActive();
+}
+
+void IUnit::bulletReaction(const IGameObject& object)
+{
+	if (object.getObjectType() == IGameObject::EObjectType::Bullet && !m_isSpawning && m_eUnitState == EUnitState::Alive)
+	{
+		m_blood.emplace_back(std::make_shared<Blood>(m_position, m_size, m_rotation, m_layer - 0.01f));
+		m_health -= object.getOwner()->getDamage();
+		if (m_health <= 0)
+		{
+			m_eUnitState = EUnitState::Dead;
+			m_deathPosition = m_position;
+			m_targetPosition = m_position = m_respawnPosition;
+			m_deathTimer.start(2000);
+		}
 	}
 }
 

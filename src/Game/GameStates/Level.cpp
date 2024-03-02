@@ -280,7 +280,7 @@ void Level::initLevel()
 	Physics::PhysicsEngine::addDynamicGameObject(m_pPlayer);
 	
 	for(size_t i = 0; i < m_enemyRespawns.size(); i++)
-		m_enemies[i] = (std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
+		m_enemies[i] = (std::make_shared<Enemy>(m_pPlayer.get(), Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
 
 	for (const auto& currentEnemy: m_enemies)
 		Physics::PhysicsEngine::addDynamicGameObject(currentEnemy);

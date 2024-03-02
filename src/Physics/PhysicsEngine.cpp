@@ -38,9 +38,6 @@ namespace Physics {
             for (auto it2 = ++it1; it2 != m_dynamicObjects.end(); it2++)
             {
                 auto pObject2 = *it2;
-                if(pObject1->getOwner() == pObject2.get() || pObject2->getOwner() == pObject1.get())
-                    continue;
-       
                 if (intersectionReactions(pObject1, pObject1->getTargetPosition(), pObject2, pObject2->getTargetPosition()))
                 {
                     pObject1->getTargetPosition() = pObject1->getCurrentPosition();

@@ -60,8 +60,9 @@ public:
 	double getMaxVelocity() const { return m_maxVelocity; }
 	void fire();
 	EUnitState getUnitState() { return m_eUnitState; }
-
+	bool bulletIsActive();
 protected:
+	void bulletReaction(const IGameObject& object);
 
 	EUnitState m_eUnitState;
 	int m_health;
