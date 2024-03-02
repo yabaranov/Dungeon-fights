@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-Timer::Timer() : m_isRunning(false), m_timeLeft(0)
+Timer::Timer() : m_isRunning(false), m_timeLeft(0), m_callback{}
 {
 
 }
@@ -12,7 +12,7 @@ void Timer::update(const double delta)
 		if (m_timeLeft <= 0)
 		{
 			m_isRunning = false;
-			m_callback();
+			if(m_callback) m_callback();
 		}
 	}
 }

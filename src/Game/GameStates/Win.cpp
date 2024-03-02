@@ -25,8 +25,11 @@ void Win::update(const double delta)
 
 void Win::processInput(const std::array<bool, 349>& keys)
 {    
-    if (keys[GLFW_KEY_ENTER])    
-        m_pGame->startScreen();    
+    if (keys[GLFW_KEY_ENTER])
+        if (m_pGame->getCurrentLevel() < m_pGame->getMaxLevel())
+            m_pGame->level(m_pGame->getCurrentLevel() + 1);
+        else
+            m_pGame->startScreen();    
 }
 
 unsigned int Win::getStateWidth() const

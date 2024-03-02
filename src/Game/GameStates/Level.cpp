@@ -65,7 +65,7 @@ std::shared_ptr<IGameObject> createGameObjectFromDescription(const char descript
 	return nullptr;
 }
 
-Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_pGame(pGame), m_playerState(IUnit::EUnitState::Alive), m_playerLives(NUMBER_PLAYER_LIVES)
+Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_pGame(pGame), m_playerState(IUnit::EUnitState::Alive), m_playerLives(NUMBER_PLAYER_LIVES), m_nextStateTimer(std::make_pair(true, Timer()))
 {
 	m_enemyStates.fill(IUnit::EUnitState::Alive);
 	m_enemyLives.fill(NUMBER_ENEMY_LIVES);
@@ -128,11 +128,11 @@ void Level::render() const
 		if (currentObject)
 			currentObject->render();
 
-	if (m_playerLives > 0)
+	if (m_playerLives > 0 || m_nextStateTimer.second.isRunning())
 		m_pPlayer->render();
 	
 	for (size_t i = 0; i < m_enemies.size(); i++)
-		if (m_enemyLives[i] > 0)
+		if (m_enemyLives[i] > 0 || m_enemyDeathTimers[i].isRunning())
 			m_enemies[i]->render();
 }
 
@@ -170,23 +170,48 @@ void Level::update(const double delta)
 			else
 				Physics::PhysicsEngine::addDynamicGameObject(m_enemies[i]);
 				
-			if(m_enemyLives[i] <= 0)
+			if (m_enemyLives[i] <= 0)
+			{
 				Physics::PhysicsEngine::removeDynamicGameObject(m_enemies[i]);
+				m_enemyDeathTimers[i].start(2000);
+			}
+				
 		}
 
 	unsigned int killÑount = 0;
 
 	for (size_t i = 0; i < m_enemies.size(); i++)
-		if (m_enemyLives[i] > 0)
+		if (m_enemyLives[i] > 0 || m_enemyDeathTimers[i].isRunning())
+		{
+			m_enemyDeathTimers[i].update(delta);
 			m_enemies[i]->update(delta);
+		}			
 		else
 			killÑount++;
 
 	if(killÑount == m_enemies.size())
-		m_pGame->win();
+		if (m_nextStateTimer.first && !m_nextStateTimer.second.isRunning())
+		{
+			m_nextStateTimer.second.start(5000);
+			m_nextStateTimer.first = false;
+		}
+		else if (m_nextStateTimer.second.isRunning())
+			m_nextStateTimer.second.update(delta);
+		else
+			m_pGame->win();
+	else if (m_playerLives <= 0)
+	{
+		if (m_nextStateTimer.first && !m_nextStateTimer.second.isRunning())
+		{
+			m_nextStateTimer.second.start(5000);
+			m_nextStateTimer.first = false;
+		}
+		else if (m_nextStateTimer.second.isRunning())
+			m_nextStateTimer.second.update(delta);
+		else 
+			m_pGame->gameOver();
+	}
 
-	if (m_playerLives <= 0)
-		m_pGame->gameOver();
 }
 
 unsigned int Level::getStateWidth() const

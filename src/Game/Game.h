@@ -30,6 +30,8 @@ public:
 	void startScreen();
 	void setWindowSize(const glm::uvec2& windowSize);
 	void updateViewport();
+	size_t getCurrentLevel() const { return m_currentLevel; }
+	size_t getMaxLevel() const { return m_maxLevel; }
 
 private:
 	std::array<bool, 349> m_keys;
@@ -38,4 +40,7 @@ private:
 
 	std::shared_ptr<IGameState> m_pCurrentGameState;
 	std::shared_ptr<RenderEngine::ShaderProgram> m_pSpriteShaderProgram;
+
+	size_t m_currentLevel;
+	size_t m_maxLevel;
 };

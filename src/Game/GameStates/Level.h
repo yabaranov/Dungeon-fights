@@ -35,7 +35,7 @@ private:
 	Game* m_pGame;
 
 	static constexpr unsigned int NUMBER_ENEMIES = 3;
-	static constexpr unsigned int NUMBER_ENEMY_LIVES = 5;
+	static constexpr unsigned int NUMBER_ENEMY_LIVES = 2;
 	static constexpr unsigned int NUMBER_PLAYER_LIVES = 5;
 	size_t m_widthBlocks;
 	size_t m_heightBlocks;
@@ -49,9 +49,11 @@ private:
 
 	std::array<glm::ivec2, NUMBER_ENEMIES> m_enemyRespawns;
 	std::array<unsigned int, NUMBER_ENEMIES> m_enemyLives;
+	std::array<Timer, NUMBER_ENEMIES> m_enemyDeathTimers;
 	std::array<IUnit::EUnitState, NUMBER_ENEMIES> m_enemyStates;
 
 	std::vector<std::shared_ptr<IGameObject>> m_levelObjects;
 	std::shared_ptr<Player> m_pPlayer;
+	std::pair<bool, Timer> m_nextStateTimer;
 	std::array<std::shared_ptr<Enemy>, NUMBER_ENEMIES> m_enemies;
 };

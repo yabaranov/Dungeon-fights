@@ -16,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize)
+Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_currentLevel(0), m_maxLevel(0)
 {
 	m_keys.fill(false);
 }
@@ -55,6 +55,7 @@ bool Game::init()
     m_pSpriteShaderProgram->use();
     m_pSpriteShaderProgram->setInt("tex", 0);
 
+    m_maxLevel = ResourceManager::getLevels().size();
     startScreen();
     return true;
 }
@@ -71,7 +72,8 @@ size_t Game::getCurrentHeight() const
 
 void Game::level(const size_t level)
 {
-    auto pLevel = std::make_shared<Level>(this, ResourceManager::getLevel(level));
+    m_currentLevel = level;
+    auto pLevel = std::make_shared<Level>(this, ResourceManager::getLevels()[level]);
     m_pCurrentGameState = pLevel;
     Physics::PhysicsEngine::setLevel(pLevel);
     updateViewport();

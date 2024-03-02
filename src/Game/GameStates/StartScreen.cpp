@@ -42,13 +42,13 @@ void StartScreen::processInput(const std::array<bool, 349>& keys)
             m_keyReleased = false;
             m_currentMenuSelection--;
             if (m_currentMenuSelection < 0)
-                m_currentMenuSelection = 2;
+                m_currentMenuSelection = 1;
         }
         else if (keys[GLFW_KEY_S])
         {
             m_keyReleased = false;
             m_currentMenuSelection++;
-            if (m_currentMenuSelection > 2)
+            if (m_currentMenuSelection > 1)
                 m_currentMenuSelection = 0;
         }
         else if (keys[GLFW_KEY_ENTER])

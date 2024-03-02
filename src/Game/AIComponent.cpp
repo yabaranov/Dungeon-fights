@@ -23,7 +23,8 @@ AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 
 void AIComponent::update(const double delta)
 {	
-	if (!m_pOwner->bulletIsActive() && glm::distance(m_pOwner->getPlayer()->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 5 * BLOCK_SIZE)
+	if (m_pOwner->getPlayer()->getUnitState() == IUnit::EUnitState::Alive && !m_pOwner->bulletIsActive() && 
+		glm::distance(m_pOwner->getPlayer()->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 5 * BLOCK_SIZE)
 	{
 		if (std::abs(m_pOwner->getPlayer()->getCurrentPosition().x - m_pOwner->getCurrentPosition().x) <= BLOCK_SIZE / 4)
 		{
