@@ -6,7 +6,6 @@ AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 }
 
 void AIComponent::update(const double delta)
-{
-	if(m_pOwner->getUnitState() == IUnit::EUnitState::Alive)
-		m_pOwner->fire();
+{	
+	m_pOwner->fire();
 }

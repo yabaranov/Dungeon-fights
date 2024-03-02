@@ -18,9 +18,6 @@ class Game;
 class StartScreen : public IGameState
 {
 public:
-	static constexpr unsigned int BLOCK_SIZE = 8;
-	static constexpr unsigned int SCREEN_WIDTH = 15 * BLOCK_SIZE * 2;
-	static constexpr unsigned int SCREEN_HEIGHT = 14 * BLOCK_SIZE * 2;
 	static constexpr unsigned int MENU_WIDTH = 128;
 	static constexpr unsigned int MENU_HEIGHT = 64;
 	static constexpr unsigned int TITLE_WIDTH = 140;

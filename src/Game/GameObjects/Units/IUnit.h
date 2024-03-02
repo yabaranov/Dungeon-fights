@@ -7,6 +7,7 @@
 #include"../../../System/Timer.h"
 
 #include <string>
+#include <vector>
 
 namespace RenderEngine
 {
@@ -14,6 +15,7 @@ namespace RenderEngine
 }
 
 class Bullet;
+class Blood;
 
 class IUnit : public IGameObject
 {
@@ -60,6 +62,7 @@ public:
 	EUnitState getUnitState() { return m_eUnitState; }
 
 protected:
+
 	EUnitState m_eUnitState;
 	int m_health;
 	EOrientation m_eOrientation;
@@ -83,10 +86,7 @@ protected:
 
 	glm::vec2 colliderOffset;
 
-	bool m_isBlood;
-	std::shared_ptr<RenderEngine::Sprite> m_pSpriteBlood;
-	Timer m_bloodTimer;
-	glm::vec2 m_bloodPosition;
+	std::vector<std::shared_ptr<Blood>> m_blood;
 
 	EUnitType m_unitType;
 };

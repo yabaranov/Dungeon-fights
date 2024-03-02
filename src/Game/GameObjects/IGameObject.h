@@ -17,8 +17,7 @@ public:
 		Unit,
 		Trees,
 		Water,
-
-		Unknown
+		Blood
 	};
 
 	IGameObject(const EObjectType objectType, const glm::vec2& position, const glm::vec2& size, const float rotation, const float layer);

@@ -118,7 +118,7 @@ Level::Level(Game* pGame, const std::vector<std::string>& levelDescription) : m_
 	//left border
 	m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2(0.f, 0.f), glm::vec2(BLOCK_SIZE, (m_heightBlocks + 1) * BLOCK_SIZE), 0.f, 0.f));
 	//right border
-	m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2((m_widthBlocks + 1) * BLOCK_SIZE, 0.f), glm::vec2(2.f * BLOCK_SIZE, (m_heightBlocks + 1) * BLOCK_SIZE), 0.f, 0.f));
+	m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2((m_widthBlocks + 1) * BLOCK_SIZE, 0.f), glm::vec2(BLOCK_SIZE, (m_heightBlocks + 1) * BLOCK_SIZE), 0.f, 0.f));
 
 }
 
@@ -145,8 +145,14 @@ void Level::update(const double delta)
 	if (m_playerState != m_pPlayer->getUnitState())
 	{
 		m_playerState = m_pPlayer->getUnitState();
-		if(m_playerState == IUnit::EUnitState::Dead)
+		if (m_playerState == IUnit::EUnitState::Dead)
+		{
 			m_playerLives--;
+			Physics::PhysicsEngine::removeDynamicGameObject(m_pPlayer);
+		}
+		else
+			Physics::PhysicsEngine::addDynamicGameObject(m_pPlayer);
+			
 	}
 		
 	if (m_playerLives > 0)
@@ -156,8 +162,14 @@ void Level::update(const double delta)
 		if (m_enemyStates[i] != m_enemies[i]->getUnitState())
 		{
 			m_enemyStates[i] = m_enemies[i]->getUnitState();
-			if(m_enemyStates[i] == IUnit::EUnitState::Dead)
+			if (m_enemyStates[i] == IUnit::EUnitState::Dead)
+			{
 				m_enemyLives[i]--;
+				Physics::PhysicsEngine::removeDynamicGameObject(m_enemies[i]);
+			}
+			else
+				Physics::PhysicsEngine::addDynamicGameObject(m_enemies[i]);
+				
 			if(m_enemyLives[i] <= 0)
 				Physics::PhysicsEngine::removeDynamicGameObject(m_enemies[i]);
 		}
@@ -179,7 +191,7 @@ void Level::update(const double delta)
 
 unsigned int Level::getStateWidth() const
 {
-	return static_cast<unsigned int>((m_widthBlocks + 3) * BLOCK_SIZE);
+	return static_cast<unsigned int>((m_widthBlocks + 2) * BLOCK_SIZE);
 }
 
 unsigned int Level::getStateHeight() const
@@ -230,40 +242,36 @@ std::vector<std::shared_ptr<IGameObject>> Level::getObjectsInArea(const glm::vec
 
 void Level::processInput(const std::array<bool, 349>& keys)
 {
-	if (m_playerState == IUnit::EUnitState::Alive)
+	
+	if (keys[GLFW_KEY_W])
 	{
-		if (keys[GLFW_KEY_W])
-		{
-			m_pPlayer->setOrientation(Player::EOrientation::Top);
-			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-		}
-		else if (keys[GLFW_KEY_A])
-		{
-			m_pPlayer->setOrientation(Player::EOrientation::Left);
-			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-		}
-		else if (keys[GLFW_KEY_S])
-		{
-			m_pPlayer->setOrientation(Player::EOrientation::Bottom);
-			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-		}
-		else if (keys[GLFW_KEY_D])
-		{
-			m_pPlayer->setOrientation(Player::EOrientation::Right);
-			m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-		}
-		else
-		{
-			m_pPlayer->setVelocity(0);
-		}
-
-		if (m_pPlayer && keys[GLFW_KEY_SPACE])
-		{
-			m_pPlayer->fire();
-		}
+		m_pPlayer->setOrientation(Player::EOrientation::Top);
+		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
 	}
-	
-	
+	else if (keys[GLFW_KEY_A])
+	{
+		m_pPlayer->setOrientation(Player::EOrientation::Left);
+		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+	}
+	else if (keys[GLFW_KEY_S])
+	{
+		m_pPlayer->setOrientation(Player::EOrientation::Bottom);
+		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+	}
+	else if (keys[GLFW_KEY_D])
+	{
+		m_pPlayer->setOrientation(Player::EOrientation::Right);
+		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+	}
+	else
+	{
+		m_pPlayer->setVelocity(0);
+	}
+
+	if (m_pPlayer && keys[GLFW_KEY_SPACE])
+	{
+		m_pPlayer->fire();
+	}	
 }
 
 void Level::initLevel()
@@ -274,6 +282,6 @@ void Level::initLevel()
 	for(size_t i = 0; i < m_enemyRespawns.size(); i++)
 		m_enemies[i] = (std::make_shared<Enemy>(Enemy::EOrientation::Bottom, 0.05, m_enemyRespawns[i], glm::vec2(BLOCK_SIZE), 0.f));
 
-	for (const auto& currentEnemyTank: m_enemies)
-		Physics::PhysicsEngine::addDynamicGameObject(currentEnemyTank);
+	for (const auto& currentEnemy: m_enemies)
+		Physics::PhysicsEngine::addDynamicGameObject(currentEnemy);
 }

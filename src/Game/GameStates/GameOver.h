@@ -18,9 +18,6 @@ class Game;
 class GameOver : public IGameState
 {
 public:
-	static constexpr unsigned int BLOCK_SIZE = 8;
-	static constexpr unsigned int SCREEN_WIDTH = 15 * BLOCK_SIZE * 2;
-	static constexpr unsigned int SCREEN_HEIGHT = 14 * BLOCK_SIZE * 2;
 	static constexpr unsigned int GAME_OVER_WIDTH = 140;
 	static constexpr unsigned int GAME_OVER_HEIGHT = 70;
 

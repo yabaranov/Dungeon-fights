@@ -55,7 +55,10 @@
 				"explosion1",
 				"explosion2",
 				"explosion3", 
-				"blood"
+				"blood1",
+				"blood2",
+				"blood3",
+				"blood4"
 			]
 		},
 		
@@ -257,13 +260,7 @@
             "textureAtlas"      : "mapTextureAtlas_8x8",
             "shader"            : "spriteShader",
             "initialSubTexture" : "bullet"
-        },
-		{
-            "name"              : "blood",
-            "textureAtlas"      : "mapTextureAtlas_16x16",
-            "shader"            : "spriteShader",
-            "initialSubTexture" : "blood"
-        },		
+        },				
         {
 			"name" 				: "respawn",
 			"textureAtlas" 		: "mapTextureAtlas_16x16",
@@ -316,7 +313,32 @@
                     "duration"   : 75
                 }
             ]
-		},		
+		},
+		{
+            "name"              : "blood",
+            "textureAtlas"      : "mapTextureAtlas_16x16",
+            "shader"            : "spriteShader",
+            "initialSubTexture" : "blood1",
+			"frames" : [
+                {
+                    "subTexture" : "blood1",
+                    "duration"   : 2500
+                },
+                {
+                    "subTexture" : "blood2",
+                    "duration"   : 2500
+                }
+                ,
+                {
+                    "subTexture" : "blood3",
+                    "duration"   : 2500
+                },
+				{
+                    "subTexture" : "blood4",
+                    "duration"   : 2500
+                }
+            ]
+        },		
         {
             "name"              : "menu",
             "textureAtlas"      : "menu_128x64",

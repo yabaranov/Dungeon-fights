@@ -3,6 +3,7 @@
 #include "../../../Renderer/Sprite.h"
 #include "../../../Resources/ResourceManager.h"
 #include "../Bullet.h"
+#include "../Blood.h"
 #include "../../../Physics/PhysicsEngine.h"
 
 IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
@@ -14,13 +15,10 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 	m_pSprite(ResourceManager::getSprite(sprite)),
 	m_pSpriteShot(ResourceManager::getSprite(sprite + "_shot")),
 	m_pRespawnSprite(ResourceManager::getSprite("respawn")),
-	m_pSpriteBlood(ResourceManager::getSprite("blood")),
-	m_pDeathSprite(ResourceManager::getSprite(sprite + "_death")), 
-	m_bloodPosition(position),
 	m_respawnSpriteAnimator(m_pRespawnSprite),
+	m_pDeathSprite(ResourceManager::getSprite(sprite + "_death")), 
 	m_maxVelocity(maxVelocity),
 	m_isSpawning(true),
-	m_isBlood(false),
 	colliderOffset(4.f), 
 	m_eUnitState(EUnitState::Alive) 		
 {
@@ -39,6 +37,8 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 	m_respawnTimer.setCallback([&]()
 		{
 			m_isSpawning = false;
+			m_eUnitState = EUnitState::Alive;
+
 		});
 
 	m_respawnTimer.start(1500);
@@ -47,14 +47,13 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 		{
 			if (object.getObjectType() == IGameObject::EObjectType::Bullet && !m_isSpawning && m_eUnitState == EUnitState::Alive)
 			{
-				m_bloodPosition = m_position;
-				m_isBlood = true;
-				m_bloodTimer.start(10000);
+				m_blood.emplace_back(std::make_shared<Blood>(m_position, m_size, m_rotation, m_layer - 0.01f));
 				m_health -= object.getOwner()->getDamage();
 				if (m_health <= 0)
 				{
 					m_eUnitState = EUnitState::Dead;
 					m_deathPosition = m_position;
+					m_targetPosition = m_position = m_respawnPosition;
 					m_deathTimer.start(2000);
 				}
 					
@@ -64,8 +63,6 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 
 	m_deathTimer.setCallback([&]()
 		{
-			m_eUnitState = EUnitState::Alive;
-
 			switch (m_unitType)
 			{
 			case EUnitType::Player:
@@ -75,16 +72,8 @@ IUnit::IUnit(const EUnitType unitType, const std::string& sprite, const EOrienta
 				m_health = static_cast<int>(EUnitHealth::Enemy);
 				break;
 			}
-
-			m_targetPosition = m_position = m_respawnPosition;
 			m_isSpawning = true;			
 			m_respawnTimer.start(1500);
-		}
-	);
-
-	m_bloodTimer.setCallback([&]()
-		{
-			m_isBlood = false;
 		}
 	);
 
@@ -111,9 +100,10 @@ void IUnit::render() const
 		m_pDeathSprite->render(m_deathPosition, m_size, m_rotation, m_layer);
 	}
 
-	if (m_isBlood)
-		m_pSpriteBlood->render(m_bloodPosition, m_size, 0.f, m_layer - 0.01f);
-
+	for (auto& currentBlood : m_blood)	
+		if (currentBlood->isActive())
+			currentBlood->render();
+	
 	if (m_pCurrentBullet->isActive())
 		m_pCurrentBullet->render();
 
@@ -121,34 +111,40 @@ void IUnit::render() const
 
 void IUnit::setOrientation(const EOrientation eOrientation)
 {
-	m_eOrientation = eOrientation;
-
-	switch (m_eOrientation)
+	if (m_eUnitState == IUnit::EUnitState::Alive)
 	{
-	case EOrientation::Top:
-		m_direction.x = 0.f;
-		m_direction.y = 1.f;
-		break;
-	case EOrientation::Bottom:
-		m_direction.x = 0.f;
-		m_direction.y = -1.f;
-		break;
-	case EOrientation::Left:
-		m_direction.x = -1.f;
-		m_direction.y = 0.f;
-		break;
-	case EOrientation::Right:
-		m_direction.x = 1.f;
-		m_direction.y = 0.f;
-		break;
+		m_eOrientation = eOrientation;
+
+		switch (m_eOrientation)
+		{
+		case EOrientation::Top:
+			m_direction.x = 0.f;
+			m_direction.y = 1.f;
+			break;
+		case EOrientation::Bottom:
+			m_direction.x = 0.f;
+			m_direction.y = -1.f;
+			break;
+		case EOrientation::Left:
+			m_direction.x = -1.f;
+			m_direction.y = 0.f;
+			break;
+		case EOrientation::Right:
+			m_direction.x = 1.f;
+			m_direction.y = 0.f;
+			break;
+		}
 	}
 }
 
 void IUnit::setVelocity(const double velocity)
 {
-	if (!m_isSpawning)
+	if (m_eUnitState == IUnit::EUnitState::Alive)
 	{
-		m_velocity = velocity;
+		if (!m_isSpawning)
+		{
+			m_velocity = velocity;
+		}
 	}
 
 }
@@ -189,14 +185,16 @@ void IUnit::update(const double delta)
 	else if (m_eUnitState == EUnitState::Dead)
 		m_deathTimer.update(delta);
 
-	if (m_isBlood)
-		m_bloodTimer.update(delta);
-
+	for (size_t i = 0; i < m_blood.size(); i++)
+		if (m_blood[i]->isActive())
+			m_blood[i]->update(delta);
+		else
+			m_blood.erase(m_blood.begin() + i);
 }
 
 void IUnit::fire()
 {
-	if (!m_isSpawning && !m_pCurrentBullet->isActive())
+	if (!m_isSpawning && !m_pCurrentBullet->isActive() && m_eUnitState == IUnit::EUnitState::Alive)
 	{
 		std::swap(m_pSprite, m_pSpriteShot);
 
