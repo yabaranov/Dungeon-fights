@@ -46,7 +46,7 @@ public:
 	unsigned int getDamage() { return m_damage; }
 	bool hasHit() { return m_hit; }
 	void setHit(bool hit) { m_hit = hit; }
-
+	const glm::vec2& getColliderOffset() const { return colliderOffset; }
 protected:
 
 	void bulletReaction(const IGameObject& object);

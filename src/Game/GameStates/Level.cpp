@@ -139,6 +139,13 @@ void Level::update(const double delta)
 	for (const auto& currentObject : m_levelObjects)
 		if (currentObject)
 			currentObject->update(delta);
+	
+	auto objectsToCheck = getObjectsInArea(m_pPlayer->getCurrentPosition() + m_pPlayer->getColliderOffset(), m_pPlayer->getCurrentPosition() + m_pPlayer->getSize() - m_pPlayer->getColliderOffset());
+	bool playerInTrees = false;
+	for (const auto& currentObject : objectsToCheck)
+		if (currentObject->getObjectType() == IGameObject::EObjectType::Trees)
+			playerInTrees = true;
+	m_pPlayer->setInTrees(playerInTrees);
 
 	if (m_playerState != m_pPlayer->getUnitState())
 	{
