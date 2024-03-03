@@ -23,7 +23,7 @@ void GameOver::update(const double delta)
 {
 }
 
-void GameOver::processInput(const std::array<bool, 349>& keys)
+void GameOver::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
 {    
     if (keys[GLFW_KEY_ENTER])    
         m_pGame->startScreen();    

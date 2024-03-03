@@ -23,7 +23,7 @@ void Win::update(const double delta)
 {
 }
 
-void Win::processInput(const std::array<bool, 349>& keys)
+void Win::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
 {    
     if (keys[GLFW_KEY_ENTER])
         if (m_pGame->getCurrentLevel() + 1 < m_pGame->getMaxLevel())

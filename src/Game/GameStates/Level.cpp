@@ -12,10 +12,13 @@
 #include "../../Resources/ResourceManager.h"
 
 #include <GLFW/glfw3.h>
+#include <glm/geometric.hpp>
 
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+
+
 
 std::shared_ptr<IGameObject> createGameObjectFromDescription(const char description, const glm::vec2& position, 
 	const glm::vec2& size, const float rotation)
@@ -252,35 +255,45 @@ std::vector<std::shared_ptr<IGameObject>> Level::getObjectsInArea(const glm::vec
 	return output;
 }
 
-void Level::processInput(const std::array<bool, 349>& keys)
+void Level::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
 {
-	
-	if (keys[GLFW_KEY_W])
+	glm::vec2 vel(0);
+
+	vel.x += (int)keys[GLFW_KEY_D];
+	vel.x -= (int)keys[GLFW_KEY_A];
+	vel.y += (int)keys[GLFW_KEY_W];
+	vel.y -= (int)keys[GLFW_KEY_S];
+
+	if (m_pPlayer->getOrientation() == Player::EOrientation::Top || m_pPlayer->getOrientation() == Player::EOrientation::Bottom)
 	{
-		m_pPlayer->setOrientation(Player::EOrientation::Top);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_A])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Left);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_S])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Bottom);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
-	}
-	else if (keys[GLFW_KEY_D])
-	{
-		m_pPlayer->setOrientation(Player::EOrientation::Right);
-		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+		bool shouldTransitionLeft = vel.y != 0 ? keysPressed[GLFW_KEY_A] : keys[GLFW_KEY_A];
+		bool shouldTransitionRight = vel.y != 0 ? keysPressed[GLFW_KEY_D] : keys[GLFW_KEY_D];
+		if (shouldTransitionLeft)
+			m_pPlayer->setOrientation(Player::EOrientation::Left);
+		else if (shouldTransitionRight)
+			m_pPlayer->setOrientation(Player::EOrientation::Right);
+		else if (vel.y != 0)
+			m_pPlayer->setOrientation(vel.y > 0 ? Player::EOrientation::Top : Player::EOrientation::Bottom);
 	}
 	else
 	{
-		m_pPlayer->setVelocity(0);
+		bool shouldTransitionBottom = vel.x != 0 ? keysPressed[GLFW_KEY_S] : keys[GLFW_KEY_S];
+		bool shouldTransitionTop = vel.x != 0 ? keysPressed[GLFW_KEY_W] : keys[GLFW_KEY_W];
+		if (shouldTransitionBottom)
+			m_pPlayer->setOrientation(Player::EOrientation::Bottom);
+		else if (shouldTransitionTop)
+			m_pPlayer->setOrientation(Player::EOrientation::Top);
+		else if (vel.x != 0)
+			m_pPlayer->setOrientation(vel.x > 0 ? Player::EOrientation::Right : Player::EOrientation::Left);
 	}
 
-	if (m_pPlayer && keys[GLFW_KEY_SPACE])
+	if (glm::length(vel) > 0.0f)
+		m_pPlayer->setVelocity(m_pPlayer->getMaxVelocity());
+	else
+		m_pPlayer->setVelocity(0);
+
+
+	if (keys[GLFW_KEY_SPACE])
 	{
 		m_pPlayer->fire();
 	}	

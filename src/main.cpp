@@ -31,6 +31,7 @@ void glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int
         glfwSetWindowShouldClose(pWindow, GL_TRUE);
     }
     g_game->setKey(key, action);
+    g_game->setKeyPressed(key, action);
 }
 
 int main(int argc, char** argv)
@@ -47,7 +48,7 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* pWindow = glfwCreateWindow(g_windowSize.x, g_windowSize.y, "Battle City", nullptr, nullptr);
+    GLFWwindow* pWindow = glfwCreateWindow(g_windowSize.x, g_windowSize.y, "Dungeon fights", nullptr, nullptr);
     if (!pWindow)
     {
         std::cerr << "glfwCreateWindow failed!" << std::endl;

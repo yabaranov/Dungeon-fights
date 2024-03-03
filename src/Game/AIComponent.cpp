@@ -12,7 +12,6 @@ AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 			std::random_device rd;
 			std::mt19937 gen(rd());
 			std::normal_distribution dist(0.0, 4.0);
-			m_hitTimer.start(1000 * dist(gen));
 			m_moveTimer.start(1000 * dist(gen));
 		}
 	);
@@ -22,8 +21,15 @@ AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 	m_hitTimer.setCallback([&]()
 		{
 			m_pOwner->setHit(true);
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::normal_distribution dist(0.0, 2.0);
+			m_hitTimer.start(1000 * dist(gen));
 		}
 	);
+
+	m_hitTimer.start(1000);
+
 }
 
 void AIComponent::update(const double delta)

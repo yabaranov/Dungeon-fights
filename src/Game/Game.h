@@ -20,6 +20,7 @@ public:
 	void render();
 	void update(const double delta);
 	void setKey(const int key, const int action);
+	void setKeyPressed(const int key, const int action);
 	bool init();
 	size_t getCurrentWidth() const;
 	size_t getCurrentHeight() const;
@@ -35,7 +36,7 @@ public:
 
 private:
 	std::array<bool, 349> m_keys;
-
+	std::array<bool, 349> m_keysPressed;
 	glm::uvec2 m_windowSize;
 
 	std::shared_ptr<IGameState> m_pCurrentGameState;

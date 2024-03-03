@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 #include <string>
 #include <memory>
 #include <set>
@@ -26,7 +27,7 @@ public:
 
 	std::vector<std::shared_ptr<IGameObject>> getObjectsInArea(const glm::vec2& bottomLeft, const glm::vec2& topRight);
 
-	virtual void processInput(const std::array<bool, 349>& keys) override;
+	virtual void processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed) override;
 
 	void initLevel();
 

@@ -3,7 +3,7 @@
 	"playerLives" : 5,
 	"enemyHealth": 10, 
 	"playerHealth" : 20,
-	"enemyDamage": 5, 
+	"enemyDamage": 0, 
 	"playerDamage" : 5,
 	
 	"levels" : [		

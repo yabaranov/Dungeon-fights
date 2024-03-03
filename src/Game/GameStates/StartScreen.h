@@ -26,7 +26,7 @@ public:
 	StartScreen(Game* pGame);
 	virtual void render() const override;
 	virtual void update(const double delta) override;
-	virtual void processInput(const std::array<bool, 349>& keys) override;
+	virtual void processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed) override;
 
 	virtual unsigned int getStateWidth() const override;
 	virtual unsigned int getStateHeight() const override;

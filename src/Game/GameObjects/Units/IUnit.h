@@ -39,6 +39,7 @@ public:
 	virtual void update(const double delta) override;
 
 	void setOrientation(const EOrientation eOrientation);
+	EOrientation getOrientation() const { return m_eOrientation; }
 	double getMaxVelocity() const { return m_maxVelocity; }
 	void fire();
 	EUnitState getUnitState() { return m_eUnitState; }

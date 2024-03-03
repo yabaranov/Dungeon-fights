@@ -29,7 +29,7 @@ void StartScreen::update(const double delta)
 {
 }
 
-void StartScreen::processInput(const std::array<bool, 349>& keys)
+void StartScreen::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
 {
     if (!keys[GLFW_KEY_W] && !keys[GLFW_KEY_S] && !keys[GLFW_KEY_ENTER])
     {

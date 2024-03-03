@@ -19,6 +19,7 @@
 Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_currentLevel(0), m_maxLevel(0)
 {
 	m_keys.fill(false);
+    m_keysPressed.fill(false);
 }
 
 Game::~Game()
@@ -32,14 +33,21 @@ void Game::render()
 }
 
 void Game::update(const double delta)
-{
-    m_pCurrentGameState->processInput(m_keys);
+{  
+    m_pCurrentGameState->processInput(m_keys, m_keysPressed);
+    m_keysPressed.fill(false);
     m_pCurrentGameState->update(delta);
 }
 
 void Game::setKey(const int key, const int action)
 {
 	m_keys[key] = action;
+}
+
+void Game::setKeyPressed(const int key, const int action)
+{
+    if (action != GLFW_REPEAT)
+        m_keysPressed[key] = action;
 }
 
 bool Game::init()
