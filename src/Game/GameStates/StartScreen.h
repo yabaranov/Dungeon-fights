@@ -1,12 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <vector>
-#include <string>
 #include <glm/vec2.hpp>
 
 #include "IGameState.h"
-#include "../../Renderer/SpriteAnimator.h"
 
 namespace RenderEngine
 {
@@ -18,14 +15,9 @@ class Game;
 class StartScreen : public IGameState
 {
 public:
-	static constexpr unsigned int MENU_WIDTH = 128;
-	static constexpr unsigned int MENU_HEIGHT = 64;
-	static constexpr unsigned int TITLE_WIDTH = 140;
-	static constexpr unsigned int TITLE_HEIGHT = 70;
 
 	StartScreen(Game* pGame);
 	virtual void render() const override;
-	virtual void update(const double delta) override;
 	virtual void processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed) override;
 
 	virtual unsigned int getStateWidth() const override;
@@ -33,7 +25,6 @@ public:
 private:
 	Game* m_pGame;
 	int m_currentMenuSelection;
-	bool m_keyReleased;
 
 	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_titleSprite;
 	std::pair<std::shared_ptr<RenderEngine::Sprite>, glm::vec2> m_menuSprite;

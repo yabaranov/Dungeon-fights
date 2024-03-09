@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+#include "../Game/GameStates/Level.h"
+
 namespace RenderEngine
 {
 	class ShaderProgram;
@@ -40,16 +42,9 @@ public:
 		std::vector<std::string> subTextures, const unsigned int subTextureWidth, const unsigned int subTextureHeight);
 
 	static bool loadJSONResources(const std::string& JSONPath);
-	static bool loadJSONGameSettings(const std::string& JSONPath);
+	static bool loadJSONLevelSettings(const std::string& JSONPath);
 
-	static const std::vector<std::vector<std::string>>& getLevels() { return m_levels; }
-
-	static unsigned int getEnemyLives() { return m_enemyLives; }
-	static unsigned int getPlayerLives() { return m_playerLives; }
-	static unsigned int getEnemyHealth() { return m_enemyHealth; }
-	static unsigned int getPlayerHealth() { return m_playerHealth; }
-	static unsigned int getEnemyDamage() { return m_enemyDamage; }
-	static unsigned int getPlayerDamage() { return m_playerDamage; }
+	static const std::vector<Level::Settings>& getLevelSettings() { return m_levelSettings; }
 
 private:
 	static std::string getFileString(const std::string& relativePath);
@@ -64,15 +59,7 @@ private:
 	typedef std::map<const std::string, std::shared_ptr<RenderEngine::Sprite>> SpritesMap;
 	static SpritesMap m_sprites;
 
-	static std::vector<std::vector<std::string>> m_levels;
-
 	static std::string m_path;
 
-	static unsigned int m_enemyLives;
-	static unsigned int m_playerLives;
-	static unsigned int m_enemyHealth;
-	static unsigned int m_playerHealth;
-	static unsigned int m_enemyDamage;
-	static unsigned int m_playerDamage;
-
+	static std::vector<Level::Settings> m_levelSettings;
 };

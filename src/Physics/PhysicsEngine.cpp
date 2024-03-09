@@ -3,8 +3,6 @@
 #include "../Game/GameObjects/IGameObject.h"
 #include "../Game/GameStates/Level.h"
 
-#include <iostream>
-
 namespace Physics {
 
     std::unordered_set<std::shared_ptr<IGameObject>> PhysicsEngine::m_dynamicObjects;

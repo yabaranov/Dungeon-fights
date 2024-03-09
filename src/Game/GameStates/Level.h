@@ -1,10 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <array>
 #include <string>
 #include <memory>
-#include <set>
 #include <glm/vec2.hpp>
 
 #include "IGameState.h"
@@ -18,8 +16,29 @@ class Game;
 class Level : public IGameState
 {
 public:
+	class Settings
+	{
+	public:
+		friend class Level;
+		Settings(std::vector<std::string> _levelDescription, unsigned int _enemyLives, unsigned int _playerLives,
+		unsigned int _enemyHealth, unsigned int _playerHealth, unsigned int _enemyDamage, unsigned int _playerDamage) :
+			levelDescription(std::move(_levelDescription)), enemyLives(_enemyLives), playerLives(_playerLives), 
+			enemyHealth(_enemyHealth), playerHealth(_playerHealth), enemyDamage(_enemyDamage), playerDamage(_playerDamage)
+		{
+		}
+
+	private:
+		std::vector<std::string> levelDescription;
+		unsigned int enemyLives;
+		unsigned int playerLives;
+		unsigned int enemyHealth;
+		unsigned int playerHealth;
+		unsigned int enemyDamage;
+		unsigned int playerDamage;
+	};
+
 	static constexpr unsigned int BLOCK_SIZE = 16;
-	Level(Game* pGame, const std::vector<std::string>& levelDescription);
+	Level(Game* pGame, const Settings& levelSettings);
 	virtual void render() const override;
 	virtual void update(const double delta) override;
 	virtual unsigned int getStateWidth() const override;
@@ -33,6 +52,8 @@ public:
 
 private:
 	Game* m_pGame;
+
+	Settings m_levelSettings;
 
 	size_t m_widthBlocks;
 	size_t m_heightBlocks;

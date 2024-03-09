@@ -6,33 +6,38 @@
 #include "../Blood.h"
 #include "../../../Physics/PhysicsEngine.h"
 
-IUnit::IUnit(const IGameObject::EObjectType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
+IUnit::IUnit(const IGameObject::EObjectType unitType, const int health, const unsigned int damage, const EOrientation eOrientation, const double maxVelocity,
 	const glm::vec2& position, const glm::vec2& size, const float layer) : 
 	IGameObject(unitType, position, size, 0.f, layer),
+	m_health(health),
+	m_initialHealth(m_health),
+	m_damage(damage),
 	m_hit(true),
 	m_respawnPosition(position),	
 	m_pCurrentBullet(std::make_shared<Bullet>(this, 0.1, m_position + m_size / 4.f, m_size / 2.f, m_size / 2.f, layer + 0.01f)),
-	m_pSprite(ResourceManager::getSprite(sprite)),
-	m_pSpriteShot(ResourceManager::getSprite(sprite + "_shot")),
 	m_pRespawnSprite(ResourceManager::getSprite("respawn")),
-	m_respawnSpriteAnimator(m_pRespawnSprite),
-	m_pDeathSprite(ResourceManager::getSprite(sprite + "_death")), 
+	m_respawnSpriteAnimator(m_pRespawnSprite),	
 	m_maxVelocity(maxVelocity),
 	m_isSpawning(true),
 	colliderOffset(4.f), 
-	m_eUnitState(EUnitState::Alive) 		
+	m_eUnitState(EUnitState::Alive),
+	m_blood(std::make_shared<Blood>())
 {
+	std::string spriteName;
+
 	switch (m_objectType)
 	{
 	case IGameObject::EObjectType::Player:
-		m_health = ResourceManager::getPlayerHealth();
-		m_damage = ResourceManager::getPlayerDamage();
+		spriteName = "player";
 		break;
 	case IGameObject::EObjectType::Enemy:
-		m_health = ResourceManager::getEnemyHealth();
-		m_damage = ResourceManager::getEnemyDamage();
+		spriteName = "enemy";
 		break;
 	}
+
+	m_pSprite = ResourceManager::getSprite(spriteName);
+	m_pSpriteShot = ResourceManager::getSprite(spriteName + "_shot");
+	m_pDeathSprite = ResourceManager::getSprite(spriteName + "_death");
 
 	m_respawnTimer.setCallback([&]()
 		{
@@ -45,15 +50,7 @@ IUnit::IUnit(const IGameObject::EObjectType unitType, const std::string& sprite,
 
 	m_deathTimer.setCallback([&]()
 		{
-			switch (m_objectType)
-			{
-			case IGameObject::EObjectType::Player:
-				m_health = ResourceManager::getPlayerHealth();
-				break;
-			case IGameObject::EObjectType::Enemy:
-				m_health = ResourceManager::getEnemyHealth();
-				break;
-			}
+			m_health = m_initialHealth;
 			m_isSpawning = true;			
 			m_respawnTimer.start(1500);
 		}
@@ -79,10 +76,8 @@ void IUnit::render() const
 		m_pDeathSprite->render(m_deathPosition, m_size, m_rotation, m_layer - 0.01f);
 	}
 
-	for (auto& currentBlood : m_blood)	
-		if (currentBlood->isActive())
-			currentBlood->render();
-	
+	m_blood->render();
+
 	if (m_pCurrentBullet->isActive())
 		m_pCurrentBullet->render();
 
@@ -164,11 +159,7 @@ void IUnit::update(const double delta)
 	else if (m_eUnitState == EUnitState::Dead)
 		m_deathTimer.update(delta);
 
-	for (size_t i = 0; i < m_blood.size(); i++)
-		if (m_blood[i]->isActive())
-			m_blood[i]->update(delta);
-		else
-			m_blood.erase(m_blood.begin() + i);
+	m_blood->update(delta);
 }
 
 void IUnit::fire()
@@ -192,7 +183,7 @@ void IUnit::bulletReaction(const IGameObject& object)
 {
 	if (object.getObjectType() == IGameObject::EObjectType::Bullet && !m_isSpawning && m_eUnitState == EUnitState::Alive)
 	{
-		m_blood.emplace_back(std::make_shared<Blood>(m_position, m_size, m_rotation, m_layer - 0.01f));
+		m_blood->addBloodUnit(m_position, m_size, m_rotation, m_layer);
 		
 		m_health -= dynamic_cast<const Bullet&>(object).getOwner()->getDamage();
 		if (m_health <= 0)

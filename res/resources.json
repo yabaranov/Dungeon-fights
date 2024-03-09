@@ -19,18 +19,11 @@
 				"brickWall_TopRight",
 				"brickWall_Top",
 				"brickWall_BottomLeft",
-				"brickWall_Left",
-				
-				"brickWall_TopRight_BottomLeft",
-				"brickWall_Top_BottomLeft",
-				"brickWall_BottomRight",
-				"brickWall_TopLeft_BottomRight",
-				"brickWall_Right",
-				"brickWall_Top_BottomRight",
-				
+				"brickWall_Left",				
+				"brickWall_BottomRight",				
+				"brickWall_Right",				
 				"brickWall_Bottom",
-				"brickWall_TopLeft_Bottom",
-				"brickWall_TopRight_Bottom",
+				
 				"water1",
 				"water2",
 				"water3",

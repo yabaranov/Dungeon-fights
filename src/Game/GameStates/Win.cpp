@@ -1,8 +1,5 @@
 #include "Win.h"
 
-#include <iostream>
-#include <array>
-
 #include "../../Resources/ResourceManager.h"
 #include "../../Renderer/Sprite.h"
 #include "../Game.h"
@@ -16,14 +13,10 @@ Win::Win(Game* pGame) : m_pGame(pGame),
 
 void Win::render() const
 {
-    m_Sprite.first->render(m_Sprite.second, glm::vec2(GAME_OVER_WIDTH, GAME_OVER_HEIGHT), 0.f);
+    m_Sprite.first->render(m_Sprite.second, glm::vec2(TEXTURE_WIDTH, TEXTURE_HEIGHT), 0.f);
 }
 
-void Win::update(const double delta)
-{
-}
-
-void Win::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
+void Win::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>&)
 {    
     if (keys[GLFW_KEY_ENTER])
         if (m_pGame->getCurrentLevel() + 1 < m_pGame->getMaxLevel())

@@ -1,8 +1,5 @@
 #include "GameOver.h"
 
-#include <iostream>
-#include <array>
-
 #include "../../Resources/ResourceManager.h"
 #include "../../Renderer/Sprite.h"
 #include "../Game.h"
@@ -16,14 +13,10 @@ GameOver::GameOver(Game* pGame) : m_pGame(pGame),
 
 void GameOver::render() const
 {
-    m_Sprite.first->render(m_Sprite.second, glm::vec2(GAME_OVER_WIDTH, GAME_OVER_HEIGHT), 0.f);
+    m_Sprite.first->render(m_Sprite.second, glm::vec2(TEXTURE_WIDTH, TEXTURE_HEIGHT), 0.f);
 }
 
-void GameOver::update(const double delta)
-{
-}
-
-void GameOver::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed)
+void GameOver::processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>&)
 {    
     if (keys[GLFW_KEY_ENTER])    
         m_pGame->startScreen();    

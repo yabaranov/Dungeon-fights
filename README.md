@@ -42,7 +42,7 @@
 
 ## <a id="level_builder">Конструктор уровней</a>
 
-Создавать уровни можно в res/levels.json, где необходимо указать описание с помощью кодов блоков:
+Создавать уровни можно в res/levelSettings.json, где необходимо указать описание с помощью кодов блоков:
 
 ![Image alt](https://github.com/yabaranov/Dungeon-fights/raw/main/res/block_map.png)
 

@@ -1,12 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <vector>
-#include <string>
-#include <glm/vec2.hpp>
 
 #include "IGameState.h"
-#include "../../Renderer/SpriteAnimator.h"
+#include <glm/vec2.hpp>
 
 namespace RenderEngine
 {
@@ -18,14 +15,9 @@ class Game;
 class Win : public IGameState
 {
 public:
-	static constexpr unsigned int GAME_OVER_WIDTH = 140;
-	static constexpr unsigned int GAME_OVER_HEIGHT = 70;
-
-
 	Win(Game* pGame);
 	virtual void render() const override;
-	virtual void update(const double delta) override;
-	virtual void processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>& keysPressed) override;
+	virtual void processInput(const std::array<bool, 349>& keys, const std::array<bool, 349>&) override;
 
 	virtual unsigned int getStateWidth() const override;
 	virtual unsigned int getStateHeight() const override;

@@ -1,18 +1,16 @@
 #include "Enemy.h"
-#include "../Bullet.h"
-#include "../../../Physics/PhysicsEngine.h"
 #include "../../AIComponent.h"
 
-Enemy::Enemy(Player* pPlayer,
+Enemy::Enemy(const int health, const unsigned int damage, 
+	const Player* pPlayer,
 	const EOrientation eOrientation,
 	const double maxVelocity,
 	const glm::vec2& position,
 	const glm::vec2& size, 
 	const float layer) : 
-	IUnit(IGameObject::EObjectType::Enemy, "enemy", eOrientation, maxVelocity, position, size, layer),
-	m_pPlayer(pPlayer)	
+	IUnit(IGameObject::EObjectType::Enemy, health, damage, eOrientation, maxVelocity, position, size, layer)
 {
-	m_pAIComponent = std::make_unique<AIComponent>(this);	
+	m_pAIComponent = std::make_unique<AIComponent>(this, pPlayer);
 
 	auto onCollisionCallback = [&](const IGameObject& object, const Physics::ECollisionDirection)
 		{

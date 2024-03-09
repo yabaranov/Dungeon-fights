@@ -6,9 +6,6 @@
 #include "../../../Renderer/SpriteAnimator.h"
 #include"../../../System/Timer.h"
 
-#include <string>
-#include <vector>
-
 namespace RenderEngine
 {
 	class Sprite;
@@ -31,7 +28,7 @@ public:
 		Top, Bottom, Left, Right
 	};
 
-	IUnit(const IGameObject::EObjectType unitType, const std::string& sprite, const EOrientation eOrientation, const double maxVelocity,
+	IUnit(const IGameObject::EObjectType unitType, const int health, const unsigned int damage, const EOrientation eOrientation, const double maxVelocity,
 		const glm::vec2& position, const glm::vec2& size, const float layer);
 
 	virtual void render() const override;
@@ -42,9 +39,9 @@ public:
 	EOrientation getOrientation() const { return m_eOrientation; }
 	double getMaxVelocity() const { return m_maxVelocity; }
 	void fire();
-	EUnitState getUnitState() { return m_eUnitState; }
-	unsigned int getDamage() { return m_damage; }
-	bool hasHit() { return m_hit; }
+	EUnitState getUnitState() const { return m_eUnitState; }
+	unsigned int getDamage() const { return m_damage; }
+	bool hasHit() const { return m_hit; }
 	void setHit(bool hit) { m_hit = hit; }
 	const glm::vec2& getColliderOffset() const { return colliderOffset; }
 protected:
@@ -52,28 +49,31 @@ protected:
 	void bulletReaction(const IGameObject& object);
 	bool m_hit;
 	EUnitState m_eUnitState;
+
 	int m_health;
 	unsigned int m_damage;
+	int m_initialHealth;
+	
 	EOrientation m_eOrientation;
+
 	std::shared_ptr<Bullet> m_pCurrentBullet;
 	std::shared_ptr<RenderEngine::Sprite> m_pSprite;
 	std::shared_ptr<RenderEngine::Sprite> m_pSpriteShot;
-	
+	Timer m_shotTimer;
+
 	std::shared_ptr<RenderEngine::Sprite> m_pRespawnSprite;
 	RenderEngine::SpriteAnimator m_respawnSpriteAnimator;
+	Timer m_respawnTimer;
 
 	std::shared_ptr<RenderEngine::Sprite> m_pDeathSprite;
 	glm::vec2 m_deathPosition;
-
-	Timer m_respawnTimer;
-	Timer m_shotTimer;
 	Timer m_deathTimer;
-	
+		
 	double m_maxVelocity;
 	bool m_isSpawning;
 	glm::vec2 m_respawnPosition;
 
 	glm::vec2 colliderOffset;
 
-	std::vector<std::shared_ptr<Blood>> m_blood;
+	std::shared_ptr<Blood> m_blood;
 };

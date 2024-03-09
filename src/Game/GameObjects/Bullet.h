@@ -5,7 +5,6 @@
 #include "../../Renderer/SpriteAnimator.h"
 #include "../../System/Timer.h"
 
-#include <array>
 #include <memory>
 
 namespace RenderEngine {

@@ -26,13 +26,14 @@ public:
 	virtual void render() const = 0;
 	virtual void update(const double delta) {};
 	virtual ~IGameObject();
+
 	const glm::vec2& getCurrentPosition() const { return m_position; }
 	const glm::vec2& getTargetPosition() const { return m_targetPosition; }
 	const glm::vec2& getCurrentDirection() const { return m_direction; }
-
 	void setCurrentPosition(const glm::vec2& position) { m_position = position; }
 	void setTargetPosition(const glm::vec2& targetPosition) { m_targetPosition = targetPosition; }
 	void setCurrentDirection(const glm::vec2& direction) { m_direction = direction; }
+
 	virtual double getCurrentVelocity() const { return m_velocity; }
 	virtual void setVelocity(const double velocity);
 

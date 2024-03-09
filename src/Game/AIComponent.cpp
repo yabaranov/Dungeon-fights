@@ -1,10 +1,12 @@
 #include "AIComponent.h"
 #include "GameObjects/Units/Enemy.h"
+#include "GameObjects/Units/Player.h"
 
 #include <random>
 
 #include <glm/geometric.hpp>
-AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
+
+AIComponent::AIComponent(Enemy* pOwner, const Player* pPlayer) : m_pOwner(pOwner), m_pPlayer(pPlayer)
 {
 	m_moveTimer.setCallback([&]()
 		{
@@ -34,13 +36,13 @@ AIComponent::AIComponent(Enemy* pOwner) : m_pOwner(pOwner)
 
 void AIComponent::update(const double delta)
 {	
-	if (m_pOwner->getPlayer()->getUnitState() == IUnit::EUnitState::Alive &&
-		(glm::distance(m_pOwner->getPlayer()->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 5 * BLOCK_SIZE && !m_pOwner->getPlayer()->inTrees() ||
-			glm::distance(m_pOwner->getPlayer()->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 2 * BLOCK_SIZE && m_pOwner->getPlayer()->inTrees()))
+	if (m_pPlayer->getUnitState() == IUnit::EUnitState::Alive &&
+		(glm::distance(m_pPlayer->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 5 * BLOCK_SIZE && !m_pPlayer->inTrees() ||
+			glm::distance(m_pPlayer->getCurrentPosition(), m_pOwner->getCurrentPosition()) <= 2 * BLOCK_SIZE && m_pPlayer->inTrees()))
 	{
-		if (m_pOwner->hasHit() && std::abs(m_pOwner->getPlayer()->getCurrentPosition().x - m_pOwner->getCurrentPosition().x) <= BLOCK_SIZE / 4)
+		if (m_pOwner->hasHit() && std::abs(m_pPlayer->getCurrentPosition().x - m_pOwner->getCurrentPosition().x) <= BLOCK_SIZE / 4)
 		{		
-			if (m_pOwner->getCurrentPosition().y < m_pOwner->getPlayer()->getCurrentPosition().y)
+			if (m_pOwner->getCurrentPosition().y < m_pPlayer->getCurrentPosition().y)
 				m_pOwner->setOrientation(IUnit::EOrientation::Top);
 			else
 				m_pOwner->setOrientation(IUnit::EOrientation::Bottom);
@@ -48,9 +50,9 @@ void AIComponent::update(const double delta)
 			m_pOwner->setVelocity(0.0);
 			m_pOwner->fire();						
 		}
-		else if (m_pOwner->hasHit() && std::abs(m_pOwner->getPlayer()->getCurrentPosition().y - m_pOwner->getCurrentPosition().y) <= BLOCK_SIZE / 4)
+		else if (m_pOwner->hasHit() && std::abs(m_pPlayer->getCurrentPosition().y - m_pOwner->getCurrentPosition().y) <= BLOCK_SIZE / 4)
 		{			
-			if (m_pOwner->getCurrentPosition().x < m_pOwner->getPlayer()->getCurrentPosition().x)
+			if (m_pOwner->getCurrentPosition().x < m_pPlayer->getCurrentPosition().x)
 				m_pOwner->setOrientation(IUnit::EOrientation::Right);
 			else
 				m_pOwner->setOrientation(IUnit::EOrientation::Left);

@@ -1,13 +1,12 @@
-{
-	"enemyLives": 3, 
-	"playerLives" : 5,
-	"enemyHealth": 10, 
-	"playerHealth" : 20,
-	"enemyDamage": 5, 
-	"playerDamage" : 5,
-	
+{	
 	"levels" : [		
 			{
+				"enemyLives": 3, 
+				"playerLives" : 5,
+				"enemyHealth": 10, 
+				"playerHealth" : 20,
+				"enemyDamage": 5, 
+				"playerDamage" : 5,
 				"description" : [
 					"EDD4DDEDD4DDE",
 					"DED4DDDDD4DED",

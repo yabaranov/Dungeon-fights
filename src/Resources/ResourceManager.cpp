@@ -17,15 +17,8 @@
 ResourceManager::ShaderProgramsMap ResourceManager::m_shaderPrograms;
 ResourceManager::TexturesMap ResourceManager::m_textures;
 ResourceManager::SpritesMap ResourceManager::m_sprites;
-std::vector<std::vector<std::string>> ResourceManager::m_levels;
+std::vector<Level::Settings> ResourceManager::m_levelSettings;
 std::string ResourceManager::m_path;
-
-unsigned int ResourceManager::m_enemyLives = 0;
-unsigned int ResourceManager::m_playerLives = 0;
-unsigned int ResourceManager::m_enemyHealth = 0;
-unsigned int ResourceManager::m_playerHealth = 0;
-unsigned int ResourceManager::m_enemyDamage = 0;
-unsigned int ResourceManager::m_playerDamage = 0;
 
 void ResourceManager::setExecutablePath(const std::string& executablePath)
 {
@@ -38,6 +31,7 @@ void ResourceManager::unloadAllResourses()
 	m_shaderPrograms.clear();
 	m_textures.clear();
 	m_sprites.clear();
+	m_levelSettings.clear();
 }
 
 std::shared_ptr<RenderEngine::ShaderProgram> ResourceManager::loadShaders(const std::string& shaderProgramName, const std::string& vertexPath, const std::string& fragmentPath)
@@ -290,7 +284,7 @@ bool ResourceManager::loadJSONResources(const std::string& JSONPath)
 	return true;
 }
 
-bool ResourceManager::loadJSONGameSettings(const std::string& JSONPath)
+bool ResourceManager::loadJSONLevelSettings(const std::string& JSONPath)
 {
 	const std::string JSONString = getFileString(JSONPath);
 
@@ -309,51 +303,34 @@ bool ResourceManager::loadJSONGameSettings(const std::string& JSONPath)
 		return false;
 	}
 
-	auto enemyLivesIt = document.FindMember("enemyLives");
-	if (enemyLivesIt != document.MemberEnd())	
-		m_enemyLives = enemyLivesIt->value.GetUint();
-
-	auto playerLivesIt = document.FindMember("playerLives");
-	if (playerLivesIt != document.MemberEnd())
-		m_playerLives = playerLivesIt->value.GetUint();
-
-	auto enemyHealthIt = document.FindMember("enemyHealth");
-	if (enemyHealthIt != document.MemberEnd())
-		m_enemyHealth = enemyHealthIt->value.GetUint();
-
-	auto playerHealthIt = document.FindMember("playerHealth");
-	if (playerHealthIt != document.MemberEnd())
-		m_playerHealth = playerHealthIt->value.GetUint();
-
-	auto enemyDamageIt = document.FindMember("enemyDamage");
-	if (enemyDamageIt != document.MemberEnd())
-		m_enemyDamage = enemyDamageIt->value.GetUint();
-
-	auto playerDamageIt = document.FindMember("playerDamage");
-	if (playerDamageIt != document.MemberEnd())
-		m_playerDamage = playerDamageIt->value.GetUint();
-
 	auto levelsIt = document.FindMember("levels");
 	if (levelsIt != document.MemberEnd())
 	{
 		for (const auto& currentLevel : levelsIt->value.GetArray())
 		{
+			unsigned int enemyLives = currentLevel["enemyLives"].GetUint();
+			unsigned int playerLives = currentLevel["playerLives"].GetUint();
+			unsigned int enemyHealth = currentLevel["enemyHealth"].GetUint();
+			unsigned int playerHealth = currentLevel["playerHealth"].GetUint();
+			unsigned int enemyDamage = currentLevel["enemyDamage"].GetUint();
+			unsigned int playerDamage = currentLevel["playerDamage"].GetUint();
+
 			const auto description = currentLevel["description"].GetArray();
-			std::vector<std::string> levelRows;
-			levelRows.reserve(description.Size());
+			std::vector<std::string> levelDescription;
+			levelDescription.reserve(description.Size());
 			size_t maxLength = 0;
 			for (const auto& currentRow : description)
 			{
-				levelRows.emplace_back(currentRow.GetString());
-				maxLength = std::max(maxLength, levelRows.back().length());
+				levelDescription.emplace_back(currentRow.GetString());
+				maxLength = std::max(maxLength, levelDescription.back().length());
 			}
 
-			for (auto& currentRow : levelRows)
+			for (auto& currentRow : levelDescription)
 			{
 				while (currentRow.length() < maxLength)
 					currentRow.append("D");
 			}
-			m_levels.emplace_back(std::move(levelRows));
+			m_levelSettings.emplace_back(std::move(levelDescription), enemyLives, playerLives, enemyHealth, playerHealth, enemyDamage, playerDamage);
 		}
 	}
 

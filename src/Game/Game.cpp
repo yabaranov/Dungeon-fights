@@ -1,8 +1,6 @@
 #include "Game.h"
 #include "../Resources/ResourceManager.h"
 #include "../Renderer/ShaderProgram.h"
-#include "../Renderer/Texture2D.h"
-#include "../Renderer/Sprite.h"
 #include "../Renderer/Renderer.h"
 
 #include "GameStates/Level.h"
@@ -24,10 +22,9 @@ Game::Game(const glm::uvec2& windowSize) : m_windowSize(windowSize), m_currentLe
 
 Game::~Game()
 {
-
 }
 
-void Game::render()
+void Game::render() const
 {
     m_pCurrentGameState->render(); 
 }
@@ -62,9 +59,9 @@ bool Game::init()
     }
     m_pSpriteShaderProgram->use();
     m_pSpriteShaderProgram->setInt("tex", 0);
-    ResourceManager::loadJSONGameSettings("res/gameSettings.json");
+    ResourceManager::loadJSONLevelSettings("res/levelSettings.json");
 
-    m_maxLevel = ResourceManager::getLevels().size();
+    m_maxLevel = ResourceManager::getLevelSettings().size();
     startScreen();
     return true;
 }
@@ -82,7 +79,7 @@ size_t Game::getCurrentHeight() const
 void Game::level(const size_t level)
 {
     m_currentLevel = level;
-    auto pLevel = std::make_shared<Level>(this, ResourceManager::getLevels()[level]);
+    auto pLevel = std::make_shared<Level>(this, ResourceManager::getLevelSettings()[level]);
     m_pCurrentGameState = pLevel;
     Physics::PhysicsEngine::setLevel(pLevel);
     updateViewport();

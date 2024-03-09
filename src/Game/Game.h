@@ -17,7 +17,7 @@ class Game
 public:
 	Game(const glm::uvec2& windowSize);
 	~Game();
-	void render();
+	void render() const;
 	void update(const double delta);
 	void setKey(const int key, const int action);
 	void setKeyPressed(const int key, const int action);
@@ -29,6 +29,7 @@ public:
 	void gameOver();
 	void win();
 	void startScreen();
+
 	void setWindowSize(const glm::uvec2& windowSize);
 	void updateViewport();
 	size_t getCurrentLevel() const { return m_currentLevel; }
